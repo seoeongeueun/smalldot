@@ -80,9 +80,9 @@ export default function GlobeMesh() {
 
   return (
     <>
-      <mesh onPointerDown={handlePointerDown}>
+      <mesh receiveShadow onPointerDown={handlePointerDown}>
         <sphereGeometry args={[1, 64, 64]} />
-        <meshBasicMaterial color="cornflowerblue" />
+        <meshStandardMaterial color="dodgerblue" transparent opacity={0.3} />
       </mesh>
       <GlobeLines />
     </>

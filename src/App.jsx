@@ -6,6 +6,7 @@ import StarField from "./components/StarField";
 export default function App() {
   return (
     <Canvas
+      shadows
       camera={{
         position: [0, 0, 0.9], // 구 내부 표면 근처
         near: 0.001,
@@ -14,7 +15,8 @@ export default function App() {
       }}
       className="globe-canvas"
     >
-      <ambientLight />
+      <ambientLight intensity={0.4} />
+      <directionalLight position={[1, 1, 10]} intensity={0.3} castShadow />
       <OrbitControls enableZoom={true} />
       {/* 지구본 테두리 */}
       <GlobeMesh />
