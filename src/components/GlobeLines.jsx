@@ -28,7 +28,7 @@ export default function GlobeLines() {
   function makeLine(ring) {
     const points = ring.map(([lng, lat]) => {
       const phi = ((90 - lat) * Math.PI) / 180;
-      const theta = ((lng + 180) * Math.PI) / 180;
+      const theta = (-(lng + 180) * Math.PI) / 180;
       const r = 1;
       return new THREE.Vector3(
         r * Math.sin(phi) * Math.cos(theta),
