@@ -5,7 +5,9 @@ export default function GlobeMesh() {
     <>
       <mesh>
         <sphereGeometry args={[1, 64, 64]} />
-        <meshStandardMaterial color="#00b9e3" />
+        {/* <meshStandardMaterial color="white" /> */}
+        {/* 조명 무시 버전 */}
+        <meshBasicMaterial color="darkslateblue" />
       </mesh>
       <GlobeLines />
     </>
