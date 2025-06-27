@@ -30,6 +30,8 @@ export default function GlobeLines() {
       const phi = ((90 - lat) * Math.PI) / 180;
       const theta = (-(lng + 180) * Math.PI) / 180;
       const r = 1;
+
+      //구면 좌표계를 3d 좌표계로 변환
       return new THREE.Vector3(
         r * Math.sin(phi) * Math.cos(theta),
         r * Math.cos(phi),
@@ -40,7 +42,7 @@ export default function GlobeLines() {
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     return (
       <line geometry={geometry}>
-        <lineBasicMaterial color="white" />
+        <lineBasicMaterial color="aquamarine" />
       </line>
     );
   }

@@ -7,12 +7,12 @@ export default function App() {
   return (
     <Canvas
       shadows
-      camera={{
-        position: [0, 0, 0.9], // 구 내부 표면 근처
-        near: 0.001,
-        far: 100,
-        fov: 75,
-      }}
+      // camera={{
+      //   position: [0, 0, 0.9], // 구 내부 표면 근처
+      //   near: 0.001,
+      //   far: 100,
+      //   fov: 75,
+      // }}
       className="globe-canvas"
     >
       <ambientLight intensity={0.4} />
