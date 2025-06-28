@@ -25,15 +25,29 @@ export default function GlobeMesh() {
     const clickedPoint = turf.point([lon, lat]);
 
     for (const feature of geojson.features) {
-      if (turf.booleanPointInPolygon(clickedPoint, feature)) {
-        console.log(`clicked: ${feature.properties.name}`);
-        createPolygonTextMeshes(feature);
-        return;
+      const geometry = feature.geometry;
+      const coords = geometry.coordinates;
+
+      //선택한 나라가 여러개의 영역으로 이루어졌는지 (멀티 폴리곤) 확인 후 선택된 폴리곤에만 글자를 배치
+      if (geometry.type === "Polygon") {
+        const polygon = turf.polygon(coords);
+        if (turf.booleanPointInPolygon(clickedPoint, polygon)) {
+          createPolygonTextMeshes(polygon, feature.properties.name);
+          return;
+        }
+      } else if (geometry.type === "MultiPolygon") {
+        for (const polyCoords of coords) {
+          const polygon = turf.polygon(polyCoords);
+          if (turf.booleanPointInPolygon(clickedPoint, polygon)) {
+            createPolygonTextMeshes(polygon, feature.properties.name);
+            return;
+          }
+        }
       }
     }
   }
 
-  function createPolygonTextMeshes(feature) {
+  function createPolygonTextMeshes(polygon, name) {
     const text =
       "  With so many memories and emotions etched into this place, sometimes I wonder if it is the place itself I love, or everything it brings back to me.";
 
@@ -46,10 +60,7 @@ export default function GlobeMesh() {
     let maxLng = -Infinity,
       maxLat = -Infinity;
 
-    const coords =
-      feature.geometry.type === "Polygon"
-        ? feature.geometry.coordinates[0]
-        : feature.geometry.coordinates[0][0];
+    const coords = polygon.geometry.coordinates[0]; // 항상 단일 폴리곤만을 전달 받음
 
     coords.forEach(([lng, lat]) => {
       minLng = Math.min(minLng, lng);
@@ -88,7 +99,7 @@ export default function GlobeMesh() {
           if (
             turf.booleanPointInPolygon(
               turf.point([lngCenter, latCenter]),
-              feature
+              polygon
             )
           ) {
             internalCells.push({
@@ -115,7 +126,7 @@ export default function GlobeMesh() {
       return;
     }
 
-    //const step = Math.floor(internalCells.length / charCount);
+    // const step = Math.floor(internalCells.length / charCount);
     // const pickedCells = internalCells
     //   .filter((_, idx) => idx % step === 0)
     //   .slice(0, charCount);
@@ -154,7 +165,15 @@ export default function GlobeMesh() {
         Math.sin(phi2) * Math.sin(theta2)
       );
       const cellWorldWidth = posVec.distanceTo(pos2);
-      const fontSize = cellWorldWidth * 0.7;
+
+      console.log(cellWorldWidth);
+      const dynamicRatio = THREE.MathUtils.clamp(
+        0.25 + (cellWorldWidth - 0.01) * 100, // 선형 증폭 (작은 셀의 기준 = 0.01)
+        0.35, // 작은 셀은 폰트를 더 작게 보정
+        0.7 // 큰 셀의 경우는 큰 폰트
+      );
+
+      const fontSize = cellWorldWidth * dynamicRatio;
 
       newMeshes.push(
         <Text
@@ -165,7 +184,7 @@ export default function GlobeMesh() {
           color="forestgreen"
           anchorX="center"
           anchorY="middle"
-          outlineWidth="10%"
+          outlineWidth="7%"
           outlineColor="white"
           rotation={[rotation.x, rotation.y, rotation.z]}
           scale={[0.8, 1, 1]}
@@ -174,29 +193,29 @@ export default function GlobeMesh() {
         </Text>
       );
 
-      //   // grid 선
-      //   const corners = [
-      //     [cell.lng - cell.lngStep / 2, cell.lat + cell.latStep / 2],
-      //     [cell.lng + cell.lngStep / 2, cell.lat + cell.latStep / 2],
-      //     [cell.lng + cell.lngStep / 2, cell.lat - cell.latStep / 2],
-      //     [cell.lng - cell.lngStep / 2, cell.lat - cell.latStep / 2],
-      //     [cell.lng - cell.lngStep / 2, cell.lat + cell.latStep / 2],
-      //   ];
+      // grid 선
+      // const corners = [
+      //   [cell.lng - cell.lngStep / 2, cell.lat + cell.latStep / 2],
+      //   [cell.lng + cell.lngStep / 2, cell.lat + cell.latStep / 2],
+      //   [cell.lng + cell.lngStep / 2, cell.lat - cell.latStep / 2],
+      //   [cell.lng - cell.lngStep / 2, cell.lat - cell.latStep / 2],
+      //   [cell.lng - cell.lngStep / 2, cell.lat + cell.latStep / 2],
+      // ];
 
-      //   const points = corners.map(([lngC, latC]) => {
-      //     const phiC = ((90 - latC) * Math.PI) / 180;
-      //     const thetaC = (-(lngC + 180) * Math.PI) / 180;
-      //     return new THREE.Vector3(
-      //       1.011 * Math.sin(phiC) * Math.cos(thetaC),
-      //       1.011 * Math.cos(phiC),
-      //       1.011 * Math.sin(phiC) * Math.sin(thetaC)
-      //     );
-      //   });
+      // const points = corners.map(([lngC, latC]) => {
+      //   const phiC = ((90 - latC) * Math.PI) / 180;
+      //   const thetaC = (-(lngC + 180) * Math.PI) / 180;
+      //   return new THREE.Vector3(
+      //     1.011 * Math.sin(phiC) * Math.cos(thetaC),
+      //     1.011 * Math.cos(phiC),
+      //     1.011 * Math.sin(phiC) * Math.sin(thetaC)
+      //   );
+      // });
 
-      //   const geometry = new THREE.BufferGeometry().setFromPoints(points);
-      //   const material = new THREE.LineBasicMaterial({ color: "yellow" });
-      //   const line = new THREE.Line(geometry, material);
-      //   scene.add(line);
+      // const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      // const material = new THREE.LineBasicMaterial({ color: "yellow" });
+      // const line = new THREE.Line(geometry, material);
+      // scene.add(line);
     });
 
     setTextMeshes(newMeshes);
