@@ -1,14 +1,19 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import * as THREE from "three";
 import * as turf from "@turf/turf";
 import { useThree } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
 import GlobeLines from "./GlobeLines";
+import { ThreeEvent } from "@react-three/fiber";
+import type { Feature, Polygon } from "geojson";
 
 export default function GlobeMesh() {
   const { scene } = useThree(); //그리드 선 보이게 할 때만 사용
-  const [geojson, setGeojson] = useState(null);
-  const [textMeshes, setTextMeshes] = useState([]);
+  const [geojson, setGeojson] = useState<GeoJSON.FeatureCollection | null>(
+    null
+  );
+  const [textMeshes, setTextMeshes] = useState<React.JSX.Element[]>([]);
 
   useEffect(() => {
     fetch("/world.geo.json")
@@ -16,7 +21,7 @@ export default function GlobeMesh() {
       .then(setGeojson);
   }, []);
 
-  function handlePointerDown(event) {
+  function handlePointerDown(event: ThreeEvent<PointerEvent>) {
     if (!geojson) return;
     const { x, y, z } = event.point;
 
@@ -26,20 +31,22 @@ export default function GlobeMesh() {
 
     for (const feature of geojson.features) {
       const geometry = feature.geometry;
-      const coords = geometry.coordinates;
+      const type = geometry.type;
 
       //선택한 나라가 여러개의 영역으로 이루어졌는지 (멀티 폴리곤) 확인 후 선택된 폴리곤에만 글자를 배치
-      if (geometry.type === "Polygon") {
+      if (type === "Polygon") {
+        const coords = geometry.coordinates as number[][][];
         const polygon = turf.polygon(coords);
         if (turf.booleanPointInPolygon(clickedPoint, polygon)) {
-          createPolygonTextMeshes(polygon, feature.properties.name);
+          createPolygonTextMeshes(polygon, feature.properties?.name);
           return;
         }
-      } else if (geometry.type === "MultiPolygon") {
+      } else if (type === "MultiPolygon") {
+        const coords = geometry.coordinates as number[][][][];
         for (const polyCoords of coords) {
           const polygon = turf.polygon(polyCoords);
           if (turf.booleanPointInPolygon(clickedPoint, polygon)) {
-            createPolygonTextMeshes(polygon, feature.properties.name);
+            createPolygonTextMeshes(polygon, feature.properties?.name);
             return;
           }
         }
@@ -47,7 +54,7 @@ export default function GlobeMesh() {
     }
   }
 
-  function createPolygonTextMeshes(polygon, name) {
+  function createPolygonTextMeshes(polygon: Feature<Polygon>, name: string) {
     const texts = [
       "  sample text 1 sample text 1 sample text 1 sample text 1",
       "  sample text 2 sample text 2 sample text 2",
@@ -61,7 +68,7 @@ export default function GlobeMesh() {
       "orangered",
       "firebrick",
     ];
-    const newMeshes = [];
+    const newMeshes: React.JSX.Element[] = [];
 
     texts.forEach((text, textIndex) => {
       const chars = text.split("");
@@ -73,7 +80,8 @@ export default function GlobeMesh() {
       let maxLng = -Infinity,
         maxLat = -Infinity;
 
-      const coords = polygon.geometry.coordinates[0]; // 항상 단일 폴리곤만을 전달 받음
+      // 항상 단일 폴리곤만을 전달 받음
+      const coords = polygon.geometry.coordinates[0] as [number, number][]; //2d 좌표로만 쓰고 있기 때문에 타입 강제
 
       coords.forEach(([lng, lat]) => {
         minLng = Math.min(minLng, lng);
@@ -245,7 +253,11 @@ export default function GlobeMesh() {
 }
 
 // TODO: 유틸 함수 분리 필요
-function cartesianToLatLon(x, y, z) {
+function cartesianToLatLon(
+  x: number,
+  y: number,
+  z: number
+): { lat: number; lon: number } {
   const r = Math.sqrt(x * x + y * y + z * z);
   const lat = 90 - (Math.acos(y / r) * 180) / Math.PI;
   let lon = (Math.atan2(z, x) * 180) / Math.PI;

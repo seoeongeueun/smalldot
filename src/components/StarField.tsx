@@ -22,7 +22,7 @@ export default function StarField() {
       sizes.push(THREE.MathUtils.randFloat(0.01, 0.05)); // 별 크기
     }
 
-    const geometry = new THREE.BufferGeometry();
+    const geometry = new (THREE as any).BufferGeometry();
     geometry.setAttribute(
       "position",
       new THREE.Float32BufferAttribute(positions, 3)
