@@ -1,7 +1,23 @@
 @import "tailwindcss";
 
+@theme {
+  --breakpoint-xs: 429px;
+  --breakpoint-sm: 539px;
+  --breakpoint-md: 1023px;
+
+  --text-xxxs: 0.6rem;
+}
+
+@font-face {
+  font-family: "Cafe24PROUP";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2507-1@1.0/Cafe24PROUP.woff2")
+    format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Cafe24PROUP, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -25,4 +41,24 @@ html {
 #root {
   width: 100%;
   height: 100%;
+}
+
+h1 {
+  font-size: 1.8rem;
+}
+
+h2 {
+  font-size: 1.6rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+p {
+  font-size: 1.1rem;
+}
+
+span {
+  font-size: 0.9rem;
 }
