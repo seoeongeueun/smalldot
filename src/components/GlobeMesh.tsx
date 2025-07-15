@@ -14,6 +14,7 @@ import type {
 } from "geojson";
 import { useGeoStore } from "@/stores/geoStore";
 import { useClickStore } from "@/stores/clickStore";
+import PinMarker from "./PinMarker";
 
 export default function GlobeMesh() {
   const geojson = useGeoStore((s) => s.geojson);
@@ -265,6 +266,7 @@ export default function GlobeMesh() {
       </mesh>
       <GlobeLines />
       {textMeshes}
+      <PinMarker />
     </>
   );
 }
