@@ -1,33 +1,40 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as THREE from "three";
 import * as turf from "@turf/turf";
 import { useThree } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
 import GlobeLines from "./GlobeLines";
 import { ThreeEvent } from "@react-three/fiber";
-import type { Feature, Polygon } from "geojson";
+import type {
+  Feature,
+  Polygon,
+  MultiPolygon,
+  GeoJsonProperties,
+} from "geojson";
+import { useGeoStore } from "@/stores/geoStore";
+import { useClickStore } from "@/stores/clickStore";
 
 export default function GlobeMesh() {
+  const geojson = useGeoStore((s) => s.geojson);
+  const setClick = useClickStore((s) => s.setClick);
+
   const { scene } = useThree(); //그리드 선 보이게 할 때만 사용
-  const [geojson, setGeojson] = useState<GeoJSON.FeatureCollection | null>(
-    null
-  );
   const [textMeshes, setTextMeshes] = useState<React.JSX.Element[]>([]);
 
-  useEffect(() => {
-    fetch("/world.geo.json")
-      .then((res) => res.json())
-      .then(setGeojson);
-  }, []);
-
   function handlePointerDown(event: ThreeEvent<PointerEvent>) {
+    event.stopPropagation();
+
     if (!geojson) return;
     const { x, y, z } = event.point;
 
     //3d 공간 좌표를 위도, 경도로 변환
     const { lat, lon } = cartesianToLatLon(x, y, z);
     const clickedPoint = turf.point([lon, lat]);
+    let foundFeature: Feature<
+      Polygon | MultiPolygon,
+      GeoJsonProperties
+    > | null = null;
 
     for (const feature of geojson.features) {
       const geometry = feature.geometry;
@@ -39,7 +46,8 @@ export default function GlobeMesh() {
         const polygon = turf.polygon(coords);
         if (turf.booleanPointInPolygon(clickedPoint, polygon)) {
           createPolygonTextMeshes(polygon, feature.properties?.name);
-          return;
+          foundFeature = feature as Feature<Polygon, GeoJsonProperties>;
+          break;
         }
       } else if (type === "MultiPolygon") {
         const coords = geometry.coordinates as number[][][][];
@@ -47,11 +55,14 @@ export default function GlobeMesh() {
           const polygon = turf.polygon(polyCoords);
           if (turf.booleanPointInPolygon(clickedPoint, polygon)) {
             createPolygonTextMeshes(polygon, feature.properties?.name);
-            return;
+            foundFeature = feature as Feature<MultiPolygon, GeoJsonProperties>;
+            break;
           }
         }
       }
+      if (foundFeature) break;
     }
+    setClick(lat, lon, foundFeature);
   }
 
   function createPolygonTextMeshes(polygon: Feature<Polygon>, name: string) {

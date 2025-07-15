@@ -3,8 +3,18 @@ import { OrbitControls } from "@react-three/drei";
 import GlobeMesh from "./components/GlobeMesh";
 import StarField from "./components/StarField";
 import Menu from "./components/Menu";
+import { useGeoStore } from "./stores/geoStore";
+import { useEffect } from "react";
 
 export default function App() {
+  const setGeojson = useGeoStore((s) => s.setGeojson);
+
+  useEffect(() => {
+    fetch("/world.geo.json")
+      .then((res) => res.json())
+      .then(setGeojson);
+  }, []);
+
   return (
     <>
       <Canvas
