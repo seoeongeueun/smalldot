@@ -62,7 +62,13 @@ export default function GlobeMesh() {
       }
       if (foundFeature) break;
     }
-    setClick(lat, lon, foundFeature);
+
+    //소수점 3자리로 반올림 후 저장
+    setClick(
+      Math.round(lat * 1e3) / 1e3,
+      Math.round(lon * 1e3) / 1e3,
+      foundFeature
+    );
   }
 
   function createPolygonTextMeshes(polygon: Feature<Polygon>, name: string) {
