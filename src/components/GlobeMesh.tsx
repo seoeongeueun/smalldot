@@ -45,7 +45,7 @@ export default function GlobeMesh() {
         const coords = geometry.coordinates as number[][][];
         const polygon = turf.polygon(coords);
         if (turf.booleanPointInPolygon(clickedPoint, polygon)) {
-          createPolygonTextMeshes(polygon, feature.properties?.name);
+          //createPolygonTextMeshes(polygon, feature.properties?.name);
           foundFeature = feature as Feature<Polygon, GeoJsonProperties>;
           break;
         }
@@ -54,7 +54,7 @@ export default function GlobeMesh() {
         for (const polyCoords of coords) {
           const polygon = turf.polygon(polyCoords);
           if (turf.booleanPointInPolygon(clickedPoint, polygon)) {
-            createPolygonTextMeshes(polygon, feature.properties?.name);
+            //createPolygonTextMeshes(polygon, feature.properties?.name);
             foundFeature = feature as Feature<MultiPolygon, GeoJsonProperties>;
             break;
           }
