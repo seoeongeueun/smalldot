@@ -6,6 +6,8 @@
   --breakpoint-md: 1023px;
 
   --text-xxxs: 0.6rem;
+
+  --color-theme: oklch(86.5% 0.127 207.078);
 }
 
 @font-face {
@@ -16,8 +18,17 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "Galmuri11-Condensed";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2506-1@1.0/Galmuri11-Condensed.woff2")
+    format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
-  font-family: Cafe24PROUP, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Galmuri11-Condensed, system-ui, Avenir, Helvetica, Arial,
+    sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
