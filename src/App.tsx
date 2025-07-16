@@ -5,10 +5,12 @@ import StarField from "./components/StarField";
 import Menu from "./components/Menu";
 import TextBox from "./components/TextBox";
 import { useGeoStore } from "./stores/geoStore";
+import { useClickStore } from "./stores/clickStore";
 import { useEffect } from "react";
 
 export default function App() {
   const setGeojson = useGeoStore((s) => s.setGeojson);
+  const click = useClickStore((s) => s.click);
 
   useEffect(() => {
     fetch("/world.geo.json")
@@ -35,13 +37,15 @@ export default function App() {
         <GlobeMesh />
         <StarField />
       </Canvas>
-      <section
-        aria-label="Menu"
-        className="fixed pointer-events-none bottom-0 justify-self-center min-w-1/2 max-w-[40rem] min-h-40 h-fit flex flex-col gap-4 justify-center xs:py-2 py-8 box-content text-white"
-      >
-        <TextBox />
-        <Menu />
-      </section>
+      {click?.feature && (
+        <section
+          aria-label="Menu"
+          className="fixed pointer-events-none bottom-0 justify-self-center min-w-1/2 !max-w-[30rem] min-h-40 h-fit flex flex-col gap-4 justify-start xs:py-2 py-8 box-content text-white"
+        >
+          <TextBox />
+          <Menu />
+        </section>
+      )}
     </>
   );
 }
