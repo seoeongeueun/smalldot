@@ -7,6 +7,7 @@ import TextBox from "./components/TextBox";
 import { useGeoStore } from "./stores/geoStore";
 import { useClickStore } from "./stores/clickStore";
 import { useEffect, useRef } from "react";
+import Note from "./components/Note";
 import NotesBox from "./components/NotesBox";
 import "@hackernoon/pixel-icon-library/fonts/iconfont.css"; //픽셀 아이콘 라이브러리
 import gsap from "gsap";
@@ -58,6 +59,7 @@ export default function App() {
         <GlobeMesh />
         <StarField />
       </Canvas>
+      <Note />
       {click?.feature && (
         <section
           ref={menuRef}

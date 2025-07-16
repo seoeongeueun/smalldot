@@ -7,7 +7,7 @@
 
   --text-xxxs: 0.6rem;
 
-  --color-theme: oklch(86.5% 0.127 207.078);
+  --color-theme: var(--theme);
 }
 
 @font-face {
@@ -35,6 +35,7 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: rgb(24, 24, 29);
+  --theme: oklch(86.5% 0.127 207.078);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -52,6 +53,11 @@ html {
 #root {
   width: 100%;
   height: 100%;
+}
+
+button:hover {
+  color: var(--theme);
+  cursor: pointer;
 }
 
 h1 {

@@ -29,7 +29,7 @@ export default function NotesBox() {
       {Array.from({ length: notesCount }).map((_, i) => (
         <button
           type="button"
-          className="hover:text-theme relative p-2 shrink-0 flex items-center justify-center basis-1/2 md:basis-1/3 aspect-square overflow-hidden"
+          className="relative p-2 shrink-0 flex items-center justify-center basis-1/2 md:basis-1/3 aspect-square overflow-hidden"
         >
           <i
             aria-hidden="true"

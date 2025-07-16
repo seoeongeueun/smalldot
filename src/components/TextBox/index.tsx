@@ -55,7 +55,7 @@ export default function TextBox() {
         <button
           type="submit"
           aria-label="Save note"
-          className="pointer-events-auto border-none text-xxxs hover:cursor-pointer hover:text-theme transition-colors"
+          className="pointer-events-auto border-none text-xxxs transition-colors"
         >
           SAVE
         </button>
