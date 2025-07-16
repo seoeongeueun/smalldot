@@ -258,11 +258,7 @@ export default function GlobeMesh() {
     <>
       <mesh receiveShadow onPointerDown={handlePointerDown}>
         <sphereGeometry args={[1, 64, 64]} />
-        <meshStandardMaterial
-          color="cornflowerblue"
-          transparent
-          opacity={0.6}
-        />
+        <meshStandardMaterial color="steelblue" transparent opacity={0.5} />
       </mesh>
       <GlobeLines />
       {textMeshes}

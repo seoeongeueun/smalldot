@@ -58,7 +58,9 @@ export default function GlobeLines() {
     const geometry = new (THREE as any).BufferGeometry();
     geometry.setFromPoints(points);
 
-    const material = new THREE.LineBasicMaterial({ color: "aquamarine" });
+    const material = new THREE.LineBasicMaterial({
+      color: "darkturquoise",
+    });
     const line = new THREE.Line(geometry, material);
 
     return <primitive key={key} object={line} />;

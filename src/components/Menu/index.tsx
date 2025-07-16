@@ -1,10 +1,7 @@
 import { useClickStore } from "@/stores/clickStore";
-import { useRef, useEffect } from "react";
 import { geoPath, geoMercator } from "d3-geo";
-import gsap from "gsap";
 
 export default function Menu() {
-  const menuRef = useRef<HTMLDivElement>(null);
   const click = useClickStore((s) => s.click);
 
   if (!click?.feature) return null;
@@ -13,26 +10,9 @@ export default function Menu() {
   const pathGenerator = geoPath(projection);
   const d = pathGenerator(click.feature as any);
 
-  useEffect(() => {
-    const menu = menuRef.current;
-    if (!menu) return;
-
-    // 기존 gsap 애니메이션 제거 (중복 방지)
-    gsap.killTweensOf(menu);
-
-    gsap.fromTo(
-      menu,
-      { scale: 0.7, opacity: 0, y: 30 },
-      { scale: 1, opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" }
-    );
-  }, [click.feature]);
-
   return (
-    <article
-      ref={menuRef}
-      className="uppercase backdrop-blur-xs w-full py-4 h-full rounded-px bg-black/50 border border-px border-theme flex flex-row"
-    >
-      <div className="w-40 px-4 shrink-0 flex flex-col items-center justify-end text-theme">
+    <article className="uppercase backdrop-blur-xs w-full py-2 md:py-3 h-full overflow-hidden rounded-px bg-black/50 border border-px border-theme flex flex-row">
+      <div className="w-40 h-full px-0 sm:px-2 md:px-4 shrink-0 md:gap-1 flex flex-col items-center justify-between text-theme">
         <svg viewBox="0 0 160 80" width="100%" height="100%">
           <path d={d || ""} fill="none" stroke="cyan" strokeWidth={1} />
         </svg>
@@ -45,7 +25,7 @@ export default function Menu() {
           </span>
         </div>
       </div>
-      <div className="w-full h-full pr-4 pr-2 flex flex-col items-start justify-center tracking-wide">
+      <div className="w-full h-full md:pl-2 pr-4 pr-2 flex flex-col items-start justify-center tracking-wide">
         <h1>{click.feature.properties?.name}</h1>
         <dl className="w-full mt-1 flex flex-col">
           <div className="w-full flex flex-row items-center justify-start gap-2">
@@ -69,7 +49,13 @@ export default function Menu() {
               <span>Last Visited:</span>
             </dt>
             <dd className="ml-1">
-              <p aria-live="polite">{new Date().toDateString()}</p>
+              <p aria-live="polite">
+                {new Intl.DateTimeFormat("en-US", {
+                  year: "2-digit",
+                  month: "2-digit",
+                  day: "2-digit",
+                }).format(new Date())}
+              </p>
             </dd>
           </div>
         </dl>

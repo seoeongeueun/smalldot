@@ -19,7 +19,7 @@ export default function StarField() {
       const z = radius * Math.sin(phi) * Math.sin(theta);
 
       positions.push(x, y, z);
-      sizes.push(THREE.MathUtils.randFloat(0.01, 0.05)); // 별 크기
+      sizes.push(THREE.MathUtils.randFloat(0.01, 0.04)); // 별 크기
     }
 
     const geometry = new (THREE as any).BufferGeometry();
@@ -33,7 +33,7 @@ export default function StarField() {
 
   return (
     <points geometry={starData}>
-      <pointsMaterial color="white" size={0.02} sizeAttenuation />
+      <pointsMaterial color="cornsilk" size={0.02} sizeAttenuation />
     </points>
   );
 }
