@@ -2,6 +2,7 @@ import { Cone } from "@react-three/drei";
 import { useRef, useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { useClickStore } from "@/stores/clickStore";
+import gsap from "gsap";
 
 export default function PinMarker() {
   const click = useClickStore((s) => s.click);
@@ -20,6 +21,19 @@ export default function PinMarker() {
     if (coneRef.current) {
       coneRef.current.lookAt(0, 0, 0);
       coneRef.current.rotateX(Math.PI / 2);
+
+      // 기존 gsap 애니메이션 제거 (중복 방지)
+      gsap.killTweensOf(coneRef.current.scale);
+
+      coneRef.current.scale.set(1, 0.001, 1);
+
+      requestAnimationFrame(() => {
+        gsap.to(coneRef.current!.scale, {
+          y: 1,
+          duration: 0.9,
+          ease: "elastic.out(1.5, 0.3)",
+        });
+      });
     }
   }, [position]);
 
