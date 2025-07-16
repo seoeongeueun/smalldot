@@ -4,9 +4,11 @@ import clsx from "clsx";
 export default function TextBox() {
   const [isFocused, setIsFocused] = useState(false);
   const [message, setMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!message) return;
+    setIsLoading(false);
 
     const timeout = setTimeout(() => {
       setMessage("");
@@ -18,12 +20,20 @@ export default function TextBox() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    setIsLoading(true);
+
     setIsFocused(false);
     setMessage("Saved");
   };
 
   return (
     <section className="w-full flex flex-col items-end justify-start gap-2">
+      {isLoading && (
+        <i
+          aria-hidden="true"
+          className="hn hn-spinner-third text-theme animate-spin"
+        ></i>
+      )}
       {message && (
         <span className="text-theme tracking-wide animate-fade">{message}</span>
       )}

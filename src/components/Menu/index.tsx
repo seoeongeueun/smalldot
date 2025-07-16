@@ -45,16 +45,34 @@ export default function Menu() {
           </span>
         </div>
       </div>
-      <div className="w-full h-full px-4 flex flex-col items-start justify-center tracking-wide">
+      <div className="w-full h-full pr-4 pr-2 flex flex-col items-start justify-center tracking-wide">
         <h1>{click.feature.properties?.name}</h1>
-        <div className="mt-1 w-full flex flex-row items-center justify-between">
-          <span>Notes:</span>
-          <p>3</p>
-        </div>
-        <div className="w-full flex flex-row items-center justify-between">
-          <span>Last Visited:</span>
-          <p>{new Date().toDateString()}</p>
-        </div>
+        <dl className="w-full mt-1 flex flex-col">
+          <div className="w-full flex flex-row items-center justify-start gap-2">
+            <i
+              aria-hidden="true"
+              className="hn hn-envelope text-[0.7rem] mb-px"
+            ></i>
+            <dt>
+              <span>Notes:</span>
+            </dt>
+            <dd className="ml-1">
+              <p aria-live="polite">3</p>
+            </dd>
+          </div>
+          <div className="w-full flex flex-row items-center justify-start gap-2">
+            <i
+              aria-hidden="true"
+              className="hn hn-location-pin text-[0.7rem] mb-px"
+            ></i>
+            <dt>
+              <span>Last Visited:</span>
+            </dt>
+            <dd className="ml-1">
+              <p aria-live="polite">{new Date().toDateString()}</p>
+            </dd>
+          </div>
+        </dl>
       </div>
     </article>
   );

@@ -7,6 +7,7 @@ import TextBox from "./components/TextBox";
 import { useGeoStore } from "./stores/geoStore";
 import { useClickStore } from "./stores/clickStore";
 import { useEffect } from "react";
+import "@hackernoon/pixel-icon-library/fonts/iconfont.css"; //픽셀 아이콘 라이브러리
 
 export default function App() {
   const setGeojson = useGeoStore((s) => s.setGeojson);
