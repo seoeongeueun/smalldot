@@ -11,11 +11,13 @@ import Note from "./components/Note";
 import NotesBox from "./components/NotesBox";
 import "@hackernoon/pixel-icon-library/fonts/iconfont.css"; //픽셀 아이콘 라이브러리
 import gsap from "gsap";
+import { useNoteStore } from "./stores/noteStore";
 
 export default function App() {
   const menuRef = useRef<HTMLDivElement>(null);
   const setGeojson = useGeoStore((s) => s.setGeojson);
   const click = useClickStore((s) => s.click);
+  const note = useNoteStore((s) => s.note);
 
   useEffect(() => {
     fetch("/world.geo.json")
@@ -59,7 +61,7 @@ export default function App() {
         <GlobeMesh />
         <StarField />
       </Canvas>
-      <Note />
+      {note && <Note />}
       {click?.feature && (
         <section
           ref={menuRef}
