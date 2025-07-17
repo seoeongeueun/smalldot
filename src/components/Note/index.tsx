@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { useNoteStore } from "@/stores/noteStore";
 import gsap from "gsap";
 import { formatTimestamp } from "@/utils/helpers";
+import { useNotes } from "@/hooks/useNotes";
 
 type Mode = "edit" | "delete" | "default";
 
@@ -11,6 +12,7 @@ export default function Note() {
   const [mode, setMode] = useState<Mode>("default");
   const noteRef = useRef<HTMLDivElement>(null);
   const { note, reset, updateContent } = useNoteStore();
+  const { deleteNote } = useNotes();
 
   useEffect(() => {
     const noteBox = noteRef.current;
@@ -37,11 +39,17 @@ export default function Note() {
     setMode("default");
   };
 
-  const handleDeleteNote = (value: boolean) => {
+  const handleDeleteNote = async (value: boolean) => {
     setMode("default");
-    if (value) {
-      //TODO: 메모 삭제 로직 추가 필요
-      reset();
+
+    //삭제 요청이 들어온 경우
+    if (value && note?.id) {
+      try {
+        await deleteNote.mutateAsync(note.id); // 비동기로 삭제 실행
+        reset(); // 상태 초기화
+      } catch (error) {
+        console.error("노트 삭제 실패:", error);
+      }
     }
   };
 

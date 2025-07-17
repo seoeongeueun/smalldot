@@ -43,7 +43,7 @@ export default function TextBox() {
         title: "Untitled Note",
         content: input,
         country_code: countryCode,
-        date: new Date().toDateString(),
+        date: new Date().toISOString(),
       },
       {
         onSuccess: () => {
