@@ -1,20 +1,17 @@
 //클릭된 메모의 정보를 저장
 import { create } from "zustand";
+import type { Note } from "@/types/database";
 
 interface NoteStore {
-  note: {
-    id: number | null;
-    content: string;
-    date: string;
-  } | null;
-  setNote: (id: number, content: string, date: string) => void;
+  note: Note | null;
+  setNote: (note: Note) => void;
   updateContent: (content: string) => void;
   reset: () => void;
 }
 
 export const useNoteStore = create<NoteStore>((set) => ({
   note: null,
-  setNote: (id, content, date) => set({ note: { id, content, date } }),
+  setNote: (note: Note) => set({ note }),
   updateContent: (content: string) =>
     set((s) => (s.note ? { note: { ...s.note, content } } : {})),
   reset: () => set({ note: null }),

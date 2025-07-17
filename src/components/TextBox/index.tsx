@@ -1,10 +1,17 @@
 import { useState, useEffect } from "react";
 import clsx from "clsx";
+import { useNotes } from "@/hooks/useNotes";
+import { useClickStore } from "@/stores/clickStore";
 
 export default function TextBox() {
   const [isFocused, setIsFocused] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [input, setInput] = useState<string>("");
+
+  const click = useClickStore((s) => s.click);
+
+  const { createNote } = useNotes();
 
   useEffect(() => {
     if (!message) return;
@@ -20,10 +27,36 @@ export default function TextBox() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!input.trim()) return;
+    console.log(click?.feature);
+    const countryCode = click?.feature?.properties?.iso_a3 || null;
+
+    if (!countryCode) {
+      setMessage("Error");
+      return;
+    }
+
     setIsLoading(true);
 
+    createNote.mutate(
+      {
+        title: "Untitled Note",
+        content: input,
+        country_code: countryCode,
+        date: new Date().toDateString(),
+      },
+      {
+        onSuccess: () => {
+          setInput("");
+          setMessage("Saved");
+        },
+        onError: () => {
+          setMessage("Failed");
+        },
+      }
+    );
+
     setIsFocused(false);
-    setMessage("Saved");
   };
 
   return (
@@ -49,6 +82,7 @@ export default function TextBox() {
           id="note"
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          onChange={(e) => setInput(e.target.value)}
           className="pointer-events-auto w-full p-0 m-0 pr-1 resize-none outline-none focus:outline-none text-sm !leading-8"
           rows={1}
         ></textarea>

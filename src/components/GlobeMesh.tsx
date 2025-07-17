@@ -15,6 +15,9 @@ import type {
 import { useGeoStore } from "@/stores/geoStore";
 import { useClickStore } from "@/stores/clickStore";
 import PinMarker from "./PinMarker";
+import { queryClient } from "@/lib/queryClient";
+import { useNotes } from "@/hooks/useNotes";
+import { fetchNotesByCountryCodeFn } from "@/api/noteFetchers";
 
 export default function GlobeMesh() {
   const geojson = useGeoStore((s) => s.geojson);
@@ -22,6 +25,8 @@ export default function GlobeMesh() {
 
   const { scene } = useThree(); //그리드 선 보이게 할 때만 사용
   const [textMeshes, setTextMeshes] = useState<React.JSX.Element[]>([]);
+
+  const { fetchNotesByCountryCode } = useNotes();
 
   function handlePointerDown(event: ThreeEvent<PointerEvent>) {
     event.stopPropagation();
@@ -62,6 +67,15 @@ export default function GlobeMesh() {
         }
       }
       if (foundFeature) break;
+    }
+
+    //나라가 존재하는 경우 나라 코드로 소속된 메모를 미리 캐싱
+    const countryCode = foundFeature?.properties?.iso_a3;
+    if (countryCode) {
+      queryClient.prefetchQuery({
+        queryKey: ["notes", countryCode],
+        queryFn: () => fetchNotesByCountryCodeFn(countryCode as string),
+      });
     }
 
     //소수점 3자리로 반올림 후 저장
