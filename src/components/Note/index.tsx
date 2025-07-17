@@ -22,6 +22,7 @@ export default function Note() {
   return (
     <article
       ref={noteRef}
+      id="note-container"
       className="pointer-events-auto w-1/4 min-w-60 p-4 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-h-1/2 h-fit text-white border border-px rounded-px border-theme bg-black/70 backdrop-blur-xs flex flex-col items-start justify-start gap-1"
     >
       <div className="flex flex-row justify-end items-center w-full">
@@ -53,7 +54,7 @@ export default function Note() {
           <button
             type="button"
             aria-label="Edit Note"
-            className="rotate-45 p-1 flex items-center justify-center hover:cursor-pointer"
+            className="rotate-45 hover:animate-spin p-1 flex items-center justify-center hover:cursor-pointer"
             onClick={() => setOpenSettings((prev) => !prev)}
           >
             <i className="hn hn-cog"></i>

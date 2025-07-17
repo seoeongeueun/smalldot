@@ -17,7 +17,7 @@ export default function App() {
   const menuRef = useRef<HTMLDivElement>(null);
   const setGeojson = useGeoStore((s) => s.setGeojson);
   const click = useClickStore((s) => s.click);
-  const note = useNoteStore((s) => s.note);
+  const { note, reset } = useNoteStore();
 
   useEffect(() => {
     fetch("/world.geo.json")
@@ -29,6 +29,7 @@ export default function App() {
     const section = menuRef.current;
     if (!section) return;
 
+    //섹션의 가장 가까운 자식에 애니메이션 부여
     const items = section.querySelectorAll(":scope > *");
 
     gsap.from(items, {
@@ -42,6 +43,31 @@ export default function App() {
       ease: "back.out(1.7)",
     });
   }, [click?.feature]);
+
+  useEffect(() => {
+    if (!note) return;
+
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      const menu = menuRef.current;
+      const noteEl = document.querySelector("#note-container");
+
+      // note 영역이 아닌 곳 클릭한 경우 메모 정보를 삭제해서 메모창 닫기
+      if (
+        noteEl &&
+        !noteEl.contains(e.target as Node) &&
+        (!menu || !menu.contains(e.target as Node))
+      )
+        reset();
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [note]);
 
   return (
     <>
@@ -57,7 +83,6 @@ export default function App() {
         <ambientLight intensity={0.4} />
         <directionalLight position={[1, 1, 10]} intensity={0.3} castShadow />
         <OrbitControls enableZoom={true} />
-        {/* 지구본 테두리 */}
         <GlobeMesh />
         <StarField />
       </Canvas>
