@@ -5,6 +5,7 @@ import { useClickStore } from "@/stores/clickStore";
 import clsx from "clsx";
 import { queryClient } from "@/lib/queryClient";
 import type { Note } from "@/types/database";
+import { formatMonthDay } from "@/utils/helpers";
 
 export default function NotesBox() {
   const click = useClickStore((s) => s.click);
@@ -54,10 +55,7 @@ export default function NotesBox() {
           >
             <i aria-hidden="true" className="hn hn-folder text-[1.6rem]"></i>
             <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 !text-[0.5rem] whitespace-nowrap">
-              {new Intl.DateTimeFormat("en-US", {
-                year: "2-digit",
-                month: "2-digit",
-              }).format(new Date())}
+              {formatMonthDay(n.date)}
             </span>
           </button>
         ))}

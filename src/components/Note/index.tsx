@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import clsx from "clsx";
 import { useNoteStore } from "@/stores/noteStore";
 import gsap from "gsap";
+import { formatTimestamp } from "@/utils/helpers";
 
 type Mode = "edit" | "delete" | "default";
 
@@ -147,9 +148,13 @@ export default function Note() {
         rows={10}
       ></textarea>
       {mode === "edit" ? (
-        <textarea rows={1} className="!w-20 ml-auto text-xs"></textarea>
+        <textarea
+          rows={1}
+          className="!w-30 ml-auto text-xs"
+          value={formatTimestamp(note?.date) ?? ""}
+        ></textarea>
       ) : (
-        <span className="ml-auto">{note?.date}</span>
+        <span className="ml-auto">{formatTimestamp(note?.date)}</span>
       )}
     </article>
   );

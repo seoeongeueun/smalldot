@@ -16,8 +16,8 @@ import { useGeoStore } from "@/stores/geoStore";
 import { useClickStore } from "@/stores/clickStore";
 import PinMarker from "./PinMarker";
 import { queryClient } from "@/lib/queryClient";
-import { useNotes } from "@/hooks/useNotes";
 import { fetchNotesByCountryCodeFn } from "@/api/noteFetchers";
+import { cartesianToLatLon } from "@/utils/helpers";
 
 export default function GlobeMesh() {
   const geojson = useGeoStore((s) => s.geojson);
@@ -25,8 +25,6 @@ export default function GlobeMesh() {
 
   const { scene } = useThree(); //그리드 선 보이게 할 때만 사용
   const [textMeshes, setTextMeshes] = useState<React.JSX.Element[]>([]);
-
-  const { fetchNotesByCountryCode } = useNotes();
 
   function handlePointerDown(event: ThreeEvent<PointerEvent>) {
     event.stopPropagation();
@@ -279,18 +277,4 @@ export default function GlobeMesh() {
       <PinMarker />
     </>
   );
-}
-
-// TODO: 유틸 함수 분리 필요
-function cartesianToLatLon(
-  x: number,
-  y: number,
-  z: number
-): { lat: number; lon: number } {
-  const r = Math.sqrt(x * x + y * y + z * z);
-  const lat = 90 - (Math.acos(y / r) * 180) / Math.PI;
-  let lon = (Math.atan2(z, x) * 180) / Math.PI;
-  lon = -lon - 180;
-  lon = ((lon + 540) % 360) - 180;
-  return { lat, lon };
 }
