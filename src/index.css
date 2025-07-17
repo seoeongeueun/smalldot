@@ -56,11 +56,6 @@ html {
   height: 100%;
 }
 
-button:hover {
-  color: var(--theme);
-  cursor: pointer;
-}
-
 h1 {
   font-size: 1.8rem;
 }
@@ -103,6 +98,7 @@ span {
   }
 }
 
+/* textarea 설정 */
 #note-container textarea {
   @apply w-full p-1 focus:outline-theme outline-1 rounded-xs resize-none;
 }
@@ -111,7 +107,44 @@ span {
   @apply border-none cursor-default outline-none;
 }
 
-/* 편집 가능 상태일 때 */
 #note-container textarea:not([readonly]) {
   @apply border border-theme focus:outline-theme;
+}
+
+/* 스크롤바 설정 */
+::-webkit-scrollbar {
+  background: transparent;
+  width: 0.3rem;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 1px solid var(--theme);
+  border-radius: 1px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--theme);
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+#note::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* 버튼 설정 */
+button:hover {
+  color: var(--theme);
+  cursor: pointer;
+}
+
+button {
+  @apply flex items-center justify-center;
 }
