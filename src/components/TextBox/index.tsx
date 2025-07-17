@@ -40,7 +40,7 @@ export default function TextBox() {
       <form
         onSubmit={handleSubmit}
         className={clsx(
-          "w-full flex flex-row bg-black/20 backdrop-blur-xs text-white leading-8 h-8 px-2 gap-2 transition-all duration-300 border border-px rounded-px",
+          "w-full flex flex-row bg-black/20 backdrop-blur-xs text-white leading-8 h-8 px-2 gap-2 transition-all duration-300 border border-px rounded-xs",
           isFocused ? "border-theme" : "border-transparent"
         )}
       >

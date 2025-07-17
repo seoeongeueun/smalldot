@@ -6,6 +6,7 @@
   --breakpoint-md: 1023px;
 
   --text-xxxs: 0.6rem;
+  --text-xs: 0.9rem;
 
   --color-theme: var(--theme);
 }
@@ -100,4 +101,17 @@ span {
   span {
     font-size: 0.9rem;
   }
+}
+
+#note-container textarea {
+  @apply w-full p-1 focus:outline-theme outline-1 rounded-xs resize-none;
+}
+
+#note-container textarea[readonly] {
+  @apply border-none cursor-default outline-none;
+}
+
+/* 편집 가능 상태일 때 */
+#note-container textarea:not([readonly]) {
+  @apply border border-theme focus:outline-theme;
 }

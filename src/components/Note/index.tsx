@@ -3,10 +3,14 @@ import clsx from "clsx";
 import { useNoteStore } from "@/stores/noteStore";
 import gsap from "gsap";
 
+type Mode = "edit" | "delete" | "default";
+
 export default function Note() {
   const [openSettings, setOpenSettings] = useState<boolean>(false);
+  const [mode, setMode] = useState<Mode>("default");
   const noteRef = useRef<HTMLDivElement>(null);
   const note = useNoteStore((s) => s.note);
+  const updateContent = useNoteStore((s) => s.updateContent);
 
   useEffect(() => {
     const noteBox = noteRef.current;
@@ -17,54 +21,100 @@ export default function Note() {
       { opacity: 0, y: 50 },
       { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.7)" }
     );
-  }, [note]);
+  }, [note?.id]);
+
+  //모드가 바뀌면 무조건 설정창 간소화
+  useEffect(() => {
+    setOpenSettings(false);
+  }, [mode]);
+
+  const handleModeChange = (newMode: Mode) => {
+    if (mode === newMode) setMode("default");
+    else setMode(newMode);
+  };
+
+  const handleSaveNote = () => {
+    setMode("default");
+  };
 
   return (
     <article
       ref={noteRef}
       id="note-container"
-      className="pointer-events-auto w-1/4 min-w-60 p-4 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-h-1/2 h-fit text-white border border-px rounded-px border-theme bg-black/70 backdrop-blur-xs flex flex-col items-start justify-start gap-1"
+      className="pointer-events-auto w-1/4 min-w-60 p-4 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-h-1/2 h-fit text-white border border-px rounded-xs border-theme bg-black/70 backdrop-blur-xs flex flex-col items-start justify-start gap-1"
     >
       <div className="flex flex-row justify-end items-center w-full">
-        <h2 className="mr-auto line-clamp-1">
-          Title Title Title Title Title Title
-        </h2>
+        {mode === "edit" ? (
+          <textarea
+            rows={1}
+            className="mr-2 w-full "
+            value={
+              "Title Title Title Title Title Title Title Title Title Title Title Title"
+            }
+          ></textarea>
+        ) : (
+          <h2 className="mr-auto line-clamp-1">
+            Title Title Title Title Title Title
+          </h2>
+        )}
+
         <div className="flex flex-row items-center gap-1">
           <div
             className={clsx(
               "flex flex-row gap-1 rounded-xs border border-px border-theme overflow-hidden transition-all",
-              openSettings ? "w-fit px-px" : "w-0"
+              openSettings ? "w-fit" : "w-0"
             )}
           >
             <button
               type="button"
               title="Edit"
+              onClick={() => handleModeChange("edit")}
               className="p-1 flex justify-center items-center"
             >
-              <i className="hn hn-pen text-[1rem]"></i>
+              <i className="hn hn-edit text-[1rem]"></i>
             </button>
             <button
               type="button"
               title="Delete"
+              onClick={() => handleModeChange("delete")}
               className="p-1 flex justify-center items-center"
             >
               <i className="hn hn-trash-alt text-[1rem]"></i>
             </button>
           </div>
-          <button
-            type="button"
-            aria-label="Edit Note"
-            className="rotate-45 hover:animate-spin p-1 flex items-center justify-center hover:cursor-pointer"
-            onClick={() => setOpenSettings((prev) => !prev)}
-          >
-            <i className="hn hn-cog"></i>
-          </button>
+          {mode === "edit" ? (
+            <button
+              type="submit"
+              aria-label="Save Note"
+              onClick={() => handleSaveNote()}
+              className="flex items-center justify-center p-1 flex items-center justify-center"
+            >
+              <i className="hn hn-check-circle"></i>
+            </button>
+          ) : (
+            <button
+              type="button"
+              aria-label="Edit Note"
+              className="rotate-45 hover:animate-spin p-1 flex items-center justify-center hover:cursor-pointer"
+              onClick={() => setOpenSettings((prev) => !prev)}
+            >
+              <i className="hn hn-cog"></i>
+            </button>
+          )}
         </div>
       </div>
-      <textarea id="note-text" readOnly className="w-full p-1" rows={10}>
-        {note?.content}
-      </textarea>
-      <span className="ml-auto">{note?.date}</span>
+      <textarea
+        id="note-text"
+        readOnly={mode !== "edit"}
+        value={note?.content ?? ""}
+        onChange={(e) => updateContent(e.target.value)}
+        rows={10}
+      ></textarea>
+      {mode === "edit" ? (
+        <textarea rows={1} className="!w-20 ml-auto text-xs"></textarea>
+      ) : (
+        <span className="ml-auto">{note?.date}</span>
+      )}
     </article>
   );
 }

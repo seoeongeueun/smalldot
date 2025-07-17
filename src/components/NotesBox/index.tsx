@@ -38,7 +38,7 @@ export default function NotesBox() {
   return (
     <section
       ref={containerRef}
-      className="border border-px rounded-px border-theme bg-black/40 p-2 w-[8rem] md:w-[12rem] h-full overflow-y-scroll flex flex-wrap pointer-events-auto"
+      className="border border-px rounded-xs border-theme bg-black/40 p-2 w-[8rem] md:w-[12rem] h-full overflow-y-scroll flex flex-wrap pointer-events-auto"
     >
       {Array.from({ length: notesCount }).map((_, i) => (
         <button
