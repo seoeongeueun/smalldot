@@ -4,6 +4,7 @@ import { useNoteStore } from "@/stores/noteStore";
 import gsap from "gsap";
 import { formatTimestamp } from "@/utils/helpers";
 import { useNotes } from "@/hooks/useNotes";
+import { useToastStore } from "@/stores/toastStore";
 
 type Mode = "edit" | "delete" | "default";
 
@@ -13,6 +14,7 @@ export default function Note() {
   const noteRef = useRef<HTMLDivElement>(null);
   const { note, reset, updateContent } = useNoteStore();
   const { deleteNote } = useNotes();
+  const setToast = useToastStore((s) => s.setToast);
 
   useEffect(() => {
     const noteBox = noteRef.current;
@@ -46,9 +48,10 @@ export default function Note() {
     if (value && note?.id) {
       try {
         await deleteNote.mutateAsync(note.id); // 비동기로 삭제 실행
+        setToast("Deleted");
         reset(); // 상태 초기화
       } catch (error) {
-        console.error("노트 삭제 실패:", error);
+        setToast("Error", true);
       }
     }
   };

@@ -2,27 +2,30 @@ import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { useNotes } from "@/hooks/useNotes";
 import { useClickStore } from "@/stores/clickStore";
+import { useToastStore } from "@/stores/toastStore";
 
 export default function TextBox() {
   const [isFocused, setIsFocused] = useState(false);
-  const [message, setMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
 
   const click = useClickStore((s) => s.click);
+  const toast = useToastStore((s) => s.toast);
+  const setToast = useToastStore((s) => s.setToast);
+  const resetToast = useToastStore((s) => s.reset);
 
   const { createNote } = useNotes();
 
   useEffect(() => {
-    if (!message) return;
+    if (!toast) return;
     setIsLoading(false);
 
     const timeout = setTimeout(() => {
-      setMessage("");
-    }, 1500);
+      resetToast();
+    }, 2000);
 
     return () => clearTimeout(timeout);
-  }, [message]);
+  }, [toast]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,7 +35,7 @@ export default function TextBox() {
     const countryCode = click?.feature?.properties?.iso_a3 || null;
 
     if (!countryCode) {
-      setMessage("Error");
+      setToast("Missing country code");
       return;
     }
 
@@ -48,10 +51,10 @@ export default function TextBox() {
       {
         onSuccess: () => {
           setInput("");
-          setMessage("Saved");
+          setToast("Saved");
         },
         onError: () => {
-          setMessage("Failed");
+          setToast("Error", true);
         },
       }
     );
@@ -67,8 +70,15 @@ export default function TextBox() {
           className="hn hn-spinner-third text-theme animate-spin"
         ></i>
       )}
-      {message && (
-        <span className="text-theme tracking-wide animate-fade">{message}</span>
+      {toast?.message && (
+        <span
+          className={clsx(
+            "tracking-wide animate-fade",
+            toast.isError ? "text-error" : "text-theme"
+          )}
+        >
+          {toast.message}
+        </span>
       )}
       <form
         onSubmit={handleSubmit}
