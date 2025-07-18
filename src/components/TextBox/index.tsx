@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { useNotes } from "@/hooks/useNotes";
 import { useClickStore } from "@/stores/clickStore";
 import { useToastStore } from "@/stores/toastStore";
+import { getKeywordsFromText } from "@/lib/geminiAnalyzer";
 
 export default function TextBox() {
   const [isFocused, setIsFocused] = useState(false);
@@ -27,11 +28,11 @@ export default function TextBox() {
     return () => clearTimeout(timeout);
   }, [toast]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!input.trim()) return;
-    console.log(click?.feature);
+
     const countryCode = click?.feature?.properties?.iso_a3 || null;
 
     if (!countryCode) {
@@ -41,25 +42,35 @@ export default function TextBox() {
 
     setIsLoading(true);
 
-    createNote.mutate(
-      {
-        title: "Untitled Note",
-        content: input,
-        country_code: countryCode,
-        date: new Date().toISOString(),
-      },
-      {
-        onSuccess: () => {
-          setInput("");
-          setToast("Saved");
-        },
-        onError: () => {
-          setToast("Error", true);
-        },
-      }
-    );
+    try {
+      // 제미나이 분석 키워드 또는 실패시는 문장의 첫 단어로 임시 지정
+      const title =
+        (await getKeywordsFromText(input)) || input.trim().split(" ")[0];
 
-    setIsFocused(false);
+      createNote.mutate(
+        {
+          title,
+          content: input,
+          country_code: countryCode,
+          date: new Date().toISOString(),
+        },
+        {
+          onSuccess: () => {
+            setInput("");
+            setToast("Saved");
+          },
+          onError: () => {
+            setToast("Save failed", true);
+          },
+        }
+      );
+    } catch (err) {
+      console.log("Title generation error:", err);
+      setToast("Title generation failed", true);
+    } finally {
+      setIsLoading(false);
+      setIsFocused(false);
+    }
   };
 
   return (
@@ -93,6 +104,7 @@ export default function TextBox() {
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           onChange={(e) => setInput(e.target.value)}
+          value={input}
           className="pointer-events-auto w-full p-0 m-0 pr-1 resize-none outline-none focus:outline-none text-sm !leading-8"
           rows={1}
         ></textarea>

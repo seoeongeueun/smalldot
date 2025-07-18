@@ -101,9 +101,7 @@ export default function Note() {
             }
           ></textarea>
         ) : (
-          <h2 className="mr-auto line-clamp-1">
-            Title Title Title Title Title Title
-          </h2>
+          <h2 className="mr-auto line-clamp-1">{note?.title}</h2>
         )}
 
         <div className="flex flex-row items-center gap-1">
