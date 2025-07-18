@@ -11,8 +11,8 @@ export default function Menu() {
   const d = pathGenerator(click.feature as any);
 
   return (
-    <article className="uppercase backdrop-blur-xs w-full py-2 md:py-3 h-full overflow-hidden rounded-xs bg-black/50 border border-px border-theme flex flex-row">
-      <div className="w-40 h-full px-0 sm:px-2 md:px-4 shrink-0 md:gap-1 flex flex-col items-center justify-between text-theme">
+    <article className="uppercase backdrop-blur-xs w-full py-2 md:py-3 h-full overflow-hidden rounded-xs bg-black/40 border border-px border-theme flex flex-row items-center">
+      <div className="w-40 h-full px-2 md:px-4 md:gap-2 py-2 md:py-0 mr-1 sm:mr-0 flex flex-col items-center justify-between text-theme">
         <svg viewBox="0 0 160 80" width="100%" height="100%">
           <path d={d || ""} fill="none" stroke="cyan" strokeWidth={1} />
         </svg>
@@ -31,7 +31,7 @@ export default function Menu() {
           <div className="w-full flex flex-row items-center justify-start gap-2">
             <i
               aria-hidden="true"
-              className="hn hn-envelope text-[0.7rem] mb-px"
+              className="hn hn-folder-open text-[0.7rem] mb-px"
             ></i>
             <dt>
               <span>Notes:</span>

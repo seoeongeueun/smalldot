@@ -13,7 +13,9 @@ export default function NotesBox() {
     "notes",
     click?.feature?.properties?.iso_a3,
   ]);
-  const [notesCount, setNotesCount] = useState<number>(notes?.length ?? 0);
+  const [notesCount, setNotesCount] = useState<number | null>(
+    notes?.length ?? null
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const { note, setNote, reset } = useNoteStore();
 
@@ -41,8 +43,14 @@ export default function NotesBox() {
   return (
     <section
       ref={containerRef}
-      className="border border-px rounded-xs border-theme bg-black/40 p-2 w-[8rem] md:w-[12rem] h-auto overflow-y-scroll flex flex-wrap pointer-events-auto"
+      className="border border-px backdrop-blur-xs rounded-xs border-theme bg-black/40 p-2 w-[8rem] md:w-[12rem] h-auto overflow-y-scroll flex flex-wrap pointer-events-auto"
     >
+      {notesCount === 0 && (
+        <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+          <i aria-hidden="true" className="hn hn-folder text-[1.6rem]"></i>
+          <span className="!text-xxxs tracking-wider">NO NOTES</span>
+        </div>
+      )}
       {notes &&
         notes.map((n: Note) => (
           <button

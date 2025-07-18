@@ -91,10 +91,10 @@ export default function App() {
         <section
           ref={menuRef}
           aria-label="Menu"
-          className="fixed pointer-events-none bottom-0 justify-self-center min-w-1/2 !max-w-[30rem] flex flex-col gap-4 justify-start xs:py-2 py-8 box-content text-white"
+          className="fixed pointer-events-none bottom-0 justify-self-center min-w-1/2 max-w-[94%] md:!max-w-[30rem] flex flex-col gap-4 justify-start xs:py-2 py-8 text-white"
         >
           <TextBox />
-          <div className="flex flex-row gap-2 h-30 ">
+          <div className="flex flex-row gap-2 h-36 md:h-34">
             <Menu />
             <NotesBox />
           </div>
