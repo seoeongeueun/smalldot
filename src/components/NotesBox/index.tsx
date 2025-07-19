@@ -43,21 +43,21 @@ export default function NotesBox() {
   return (
     <section
       ref={containerRef}
-      className="border border-px backdrop-blur-xs rounded-xs border-theme bg-black/40 p-2 w-[8rem] md:w-[12rem] h-auto overflow-y-scroll flex flex-wrap pointer-events-auto"
+      className="border border-px backdrop-blur-xs rounded-xs border-theme bg-black/40 w-full sm:w-[8rem] md:w-[12rem] h-12 sm:min-h-28 leading-4 sm:h-auto overflow-x-scroll overflow-y-hidden sm:overflow-x-hidden sm:overflow-y-scroll flex flex-row sm:flex-wrap items-center pointer-events-auto"
     >
-      {notesCount === 0 && (
+      {/* {notesCount === 0 && (
         <div className="w-full h-full flex flex-col items-center justify-center gap-2">
           <i aria-hidden="true" className="hn hn-folder text-[1.6rem]"></i>
           <span className="!text-xxxs tracking-wider">NO NOTES</span>
         </div>
-      )}
+      )} */}
       {notes &&
         notes.map((n: Note) => (
           <button
             type="button"
             onClick={() => handleOpenNote(n)}
             className={clsx(
-              "relative p-2 basis-1/2 md:basis-1/3 w-fit h-min aspect-square overflow-hidden",
+              "relative px-2 shrink-0 sm:px-0 sm:basis-1/2 md:basis-1/3 aspect-square overflow-hidden",
               n.id === note?.id ? "text-theme" : "text-white"
             )}
           >

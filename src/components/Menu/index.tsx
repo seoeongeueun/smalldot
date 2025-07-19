@@ -11,8 +11,11 @@ export default function Menu() {
   const d = pathGenerator(click.feature as any);
 
   return (
-    <article className="uppercase backdrop-blur-xs w-full py-2 md:py-3 h-full overflow-hidden rounded-xs bg-black/40 border border-px border-theme flex flex-row items-center">
-      <div className="w-40 h-full px-2 md:px-4 md:gap-2 py-2 md:py-0 mr-1 sm:mr-0 flex flex-col items-center justify-between text-theme">
+    <article
+      aria-labelledby="country-name"
+      className="uppercase backdrop-blur-xs w-full sm:min-h-28 sm:h-auto py-2 h-full overflow-hidden rounded-xs bg-black/40 border border-px border-theme flex flex-row items-center"
+    >
+      <div className="w-40 h-full px-2 py-2 mr-1 sm:mr-0 flex flex-col items-center justify-between text-theme">
         <svg viewBox="0 0 160 80" width="100%" height="100%">
           <path d={d || ""} fill="none" stroke="cyan" strokeWidth={1} />
         </svg>
@@ -25,8 +28,10 @@ export default function Menu() {
           </span>
         </div>
       </div>
-      <div className="w-full h-full md:pl-2 pr-4 pr-2 flex flex-col items-start justify-center tracking-wide">
-        <h1>{click.feature.properties?.name}</h1>
+      <header className="w-full h-full pr-4 pr-2 flex flex-col items-start justify-center tracking-wide">
+        <h1 id="country-name" className="leading-[2rem]">
+          {click.feature.properties?.name}
+        </h1>
         <dl className="w-full mt-1 flex flex-col">
           <div className="w-full flex flex-row items-center justify-start gap-2">
             <i
@@ -59,7 +64,7 @@ export default function Menu() {
             </dd>
           </div>
         </dl>
-      </div>
+      </header>
     </article>
   );
 }

@@ -1,9 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --breakpoint-xs: 429px;
-  --breakpoint-sm: 539px;
-  --breakpoint-md: 1023px;
+  /* min width 기준 breakpoints */
+  --breakpoint-*: initial;
+  --breakpoint-xs: 0px;
+  --breakpoint-sm: 429px;
+  --breakpoint-md: 539px;
+  --breakpoint-lg: 1023px;
 
   --text-xxxs: 0.6rem;
   --text-xs: 0.9rem;
@@ -34,11 +37,13 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: rgb(24, 24, 29);
   --theme: oklch(86.5% 0.127 207.078);
   --error: rgb(255, 31, 31);
+  --void: rgb(24, 24, 29);
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: var(--void);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -51,6 +56,7 @@ html {
   margin: 0;
   width: 100%;
   height: 100%;
+  background-color: var(--void);
 }
 
 #root {
@@ -78,7 +84,7 @@ span {
   font-size: 0.9rem;
 }
 
-@media screen and (max-width: 539px) {
+@media screen and (max-width: theme(--breakpoint-md)) {
   h1 {
     font-size: 1.5rem;
   }
@@ -117,6 +123,10 @@ span {
 ::-webkit-scrollbar {
   background: transparent;
   width: 0.3rem;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 0.3rem;
 }
 
 ::-webkit-scrollbar-track {
