@@ -15,11 +15,11 @@ export default function Menu() {
       aria-labelledby="country-name"
       className="uppercase backdrop-blur-xs w-full sm:min-h-28 sm:h-auto py-2 h-full overflow-hidden rounded-xs bg-black/40 border border-px border-theme flex flex-row items-center"
     >
-      <div className="w-40 h-full px-2 py-2 mr-1 sm:mr-0 flex flex-col items-center justify-between text-theme">
+      <div className="w-40 h-full px-2 py-2 sm:mr-0 flex flex-col items-center justify-between text-theme">
         <svg viewBox="0 0 160 80" width="100%" height="100%">
           <path d={d || ""} fill="none" stroke="cyan" strokeWidth={1} />
         </svg>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
           <span className="!text-xxxs text-center">
             {`${click.lat || 0}° N`}
           </span>
@@ -28,7 +28,7 @@ export default function Menu() {
           </span>
         </div>
       </div>
-      <header className="w-full h-full pr-4 pr-2 flex flex-col items-start justify-center tracking-wide">
+      <header className="w-full h-full pr-4 pr-2 ml-2 flex flex-col items-start justify-center tracking-wide">
         <h1 id="country-name" className="leading-[2rem]">
           {click.feature.properties?.name}
         </h1>

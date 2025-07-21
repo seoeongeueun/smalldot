@@ -20,11 +20,17 @@ export default function Note() {
     const noteBox = noteRef.current;
     if (!noteBox) return;
 
-    gsap.fromTo(
-      noteBox,
-      { opacity: 0, y: 50 },
-      { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.7)" }
-    );
+    gsap.set(noteBox, {
+      opacity: 0,
+      y: 50,
+    });
+
+    gsap.to(noteBox, {
+      opacity: 1,
+      y: 0,
+      duration: 0.5,
+      ease: "back.out(1.7)",
+    });
   }, [note?.id]);
 
   //모드가 바뀌면 무조건 설정창 간소화
@@ -89,9 +95,9 @@ export default function Note() {
     <article
       ref={noteRef}
       id="note-container"
-      className="pointer-events-auto w-1/4 min-w-60 p-4 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-h-1/2 h-fit text-white border border-px rounded-xs border-theme bg-black/70 backdrop-blur-xs flex flex-col items-start justify-start gap-1"
+      className="pointer-events-auto w-[92%] sm:w-1/2 min-w-60 p-4 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-h-1/2 h-fit text-white border border-px rounded-xs border-theme bg-black/70 backdrop-blur-xs flex flex-col items-start justify-start gap-1"
     >
-      <div className="flex flex-row justify-end items-center w-full">
+      <header className="flex flex-row justify-end items-center w-full">
         {mode === "edit" ? (
           <textarea
             rows={1}
@@ -148,7 +154,7 @@ export default function Note() {
             </button>
           )}
         </div>
-      </div>
+      </header>
       <textarea
         id="note-text"
         readOnly={mode !== "edit"}
