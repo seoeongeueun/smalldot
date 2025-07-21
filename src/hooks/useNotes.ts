@@ -15,7 +15,7 @@ export function useNotes() {
     });
 
   // 나라 고유번호로 모든 메모 반환
-  const fetchNotesByCountryCode = (countryCode: string) =>
+  const fetchNotesByCountryCode = (countryCode: string | null) =>
     useQuery({
       queryKey: ["notes", countryCode],
       queryFn: () => fetchNotesByCountryCodeFn(countryCode),

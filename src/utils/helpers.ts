@@ -17,6 +17,18 @@ export function formatTimestamp(raw: string) {
   return `${datePart.replace(/\//g, ".")} ${timePart}`;
 }
 
+export function formatTimestampWithoutTime(raw: string) {
+  const date = new Date(raw);
+
+  const datePart = new Intl.DateTimeFormat("en-US", {
+    month: "2-digit",
+    day: "2-digit",
+    year: "numeric",
+  }).format(date); // 07/17/2025 형식
+
+  return `${datePart.replace(/\//g, ".")}`;
+}
+
 export function formatMonthDay(raw: string) {
   const date = new Date(raw);
   return new Intl.DateTimeFormat("en-US", {

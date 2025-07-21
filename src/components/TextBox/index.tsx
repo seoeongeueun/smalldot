@@ -10,7 +10,7 @@ export default function TextBox() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
 
-  const click = useClickStore((s) => s.click);
+  const countryCode = useClickStore((s) => s.countryCode);
   const toast = useToastStore((s) => s.toast);
   const setToast = useToastStore((s) => s.setToast);
   const resetToast = useToastStore((s) => s.reset);
@@ -32,8 +32,6 @@ export default function TextBox() {
     e.preventDefault();
 
     if (!input.trim()) return;
-
-    const countryCode = click?.feature?.properties?.iso_a3 || null;
 
     if (!countryCode) {
       setToast("Missing country code");

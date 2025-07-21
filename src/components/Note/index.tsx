@@ -69,7 +69,7 @@ export default function Note() {
         open
         role="alertdialog"
         aria-labelledby="delete-note-title"
-        className="pointer-events-auto p-4 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-40 w-50 text-white border border-px rounded-xs border-theme bg-black/70 backdrop-blur-xs flex flex-col items-center justify-center gap-4"
+        className="z-30 pointer-events-auto p-4 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-40 w-50 text-white border border-px rounded-xs border-theme bg-black/70 backdrop-blur-xs flex flex-col items-center justify-center gap-4"
       >
         <h3 id="delete-note-title">Delete this note?</h3>
         <div className="flex flex-row justify-between w-1/2 items-center">
@@ -95,7 +95,7 @@ export default function Note() {
     <article
       ref={noteRef}
       id="note-container"
-      className="pointer-events-auto w-[92%] sm:w-1/2 min-w-60 p-4 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-h-1/2 h-fit text-white border border-px rounded-xs border-theme bg-black/70 backdrop-blur-xs flex flex-col items-start justify-start gap-1"
+      className="z-30 pointer-events-auto w-[92%] sm:w-1/2 min-w-60 p-4 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-h-1/2 h-fit text-white border border-px rounded-xs border-theme bg-black/70 backdrop-blur-xs flex flex-col items-start justify-start gap-1"
     >
       <header className="flex flex-row justify-end items-center w-full">
         {mode === "edit" ? (

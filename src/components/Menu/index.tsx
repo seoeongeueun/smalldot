@@ -1,8 +1,14 @@
 import { useClickStore } from "@/stores/clickStore";
 import { geoPath, geoMercator } from "d3-geo";
+import { useNotes } from "@/hooks/useNotes";
+import { formatTimestampWithoutTime } from "@/utils/helpers";
 
 export default function Menu() {
   const click = useClickStore((s) => s.click);
+  const countryCode = useClickStore((s) => s.countryCode);
+  const { fetchNotesByCountryCode } = useNotes();
+
+  const { data: notes, isLoading } = fetchNotesByCountryCode(countryCode);
 
   if (!click?.feature) return null;
 
@@ -41,9 +47,16 @@ export default function Menu() {
             <dt>
               <span>Notes:</span>
             </dt>
-            <dd className="ml-1">
-              <p aria-live="polite">3</p>
-            </dd>
+            {isLoading ? (
+              <i
+                aria-hidden="true"
+                className="hn hn-spinner-third text-theme animate-spin ml-1"
+              ></i>
+            ) : (
+              <dd className="ml-1">
+                <p aria-live="polite">{notes?.length ?? 0}</p>
+              </dd>
+            )}
           </div>
           <div className="w-full flex flex-row items-center justify-start gap-2">
             <i
@@ -53,15 +66,20 @@ export default function Menu() {
             <dt>
               <span>Last Visited:</span>
             </dt>
-            <dd className="ml-1">
-              <p aria-live="polite">
-                {new Intl.DateTimeFormat("en-US", {
-                  year: "2-digit",
-                  month: "2-digit",
-                  day: "2-digit",
-                }).format(new Date())}
-              </p>
-            </dd>
+            {isLoading ? (
+              <i
+                aria-hidden="true"
+                className="hn hn-spinner-third text-theme animate-spin ml-1"
+              ></i>
+            ) : (
+              <dd className="ml-1">
+                <p aria-live="polite">
+                  {notes && notes?.length > 0
+                    ? formatTimestampWithoutTime(notes[0].date)
+                    : "NO RECORD"}
+                </p>
+              </dd>
+            )}
           </div>
         </dl>
       </header>
