@@ -3,19 +3,16 @@ import gsap from "gsap";
 import { useNoteStore } from "@/stores/noteStore";
 import { useClickStore } from "@/stores/clickStore";
 import clsx from "clsx";
-import { queryClient } from "@/lib/queryClient";
 import type { Note } from "@/types/database";
 import { formatMonthDay } from "@/utils/helpers";
+import { useNotes } from "@/hooks/useNotes";
 
 export default function NotesBox() {
-  const click = useClickStore((s) => s.click);
-  const notes = queryClient.getQueryData<Note[]>([
-    "notes",
-    click?.feature?.properties?.iso_a3,
-  ]);
-  const [notesCount, setNotesCount] = useState<number | null>(
-    notes?.length ?? null
-  );
+  const countryCode = useClickStore((s) => s.countryCode);
+
+  const { fetchNotesByCountryCode } = useNotes();
+  const { data: notes, isLoading } = fetchNotesByCountryCode(countryCode);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const { note, setNote, reset } = useNoteStore();
 
@@ -33,7 +30,7 @@ export default function NotesBox() {
       stagger: 0.06,
       ease: "power2.out",
     });
-  }, [notesCount]);
+  }, [notes?.length]);
 
   const handleOpenNote = (newNote: Note) => {
     if (note?.id === newNote.id) reset();
@@ -43,30 +40,35 @@ export default function NotesBox() {
   return (
     <section
       ref={containerRef}
-      className="border border-px backdrop-blur-xs sm:p-2 rounded-xs border-theme bg-black/40 w-full sm:w-[8rem] md:w-[12rem] h-12 sm:min-h-28 sm:h-auto sm:max-h-[calc(5*1.6rem)] sm:gap-y-12 md:gap-y-8 overflow-x-scroll overflow-y-hidden sm:overflow-x-hidden sm:overflow-y-scroll grid grid-flow-col auto-cols-[2.4rem] sm:grid-flow-row sm:grid-cols-2 md:grid-cols-3 pointer-events-auto"
+      className={clsx(
+        "border border-px backdrop-blur-xs sm:p-2 rounded-xs border-theme bg-black/40 w-full sm:w-[8rem] md:w-[12rem] h-12 sm:min-h-28 sm:h-auto sm:max-h-[calc(5*1.6rem)] sm:gap-y-12 md:gap-y-8 overflow-x-scroll overflow-y-hidden sm:overflow-x-hidden sm:overflow-y-scroll grid-flow-col auto-cols-[2.4rem] sm:grid-flow-row sm:grid-cols-2 md:grid-cols-3 pointer-events-auto",
+        !notes || notes?.length > 0 ? "grid" : "flex"
+      )}
     >
-      {/* {notesCount === 0 && (
-        <div className="w-full h-full flex flex-col items-center justify-center gap-2">
-          <i aria-hidden="true" className="hn hn-folder text-[1.6rem]"></i>
-          <span className="!text-xxxs tracking-wider">NO NOTES</span>
-        </div>
-      )} */}
-      {notes &&
-        notes.map((n: Note) => (
-          <button
-            type="button"
-            onClick={() => handleOpenNote(n)}
-            className={clsx(
-              "relative px-2 shrink-0 aspect-square overflow-hidden",
-              n.id === note?.id ? "text-theme" : "text-white"
-            )}
-          >
+      {!isLoading ? (
+        notes && notes.length > 0 ? (
+          notes.map((n: Note) => (
+            <button
+              type="button"
+              onClick={() => handleOpenNote(n)}
+              className={clsx(
+                "relative px-2 shrink-0 aspect-square overflow-hidden",
+                n.id === note?.id ? "text-theme" : "text-white"
+              )}
+            >
+              <i aria-hidden="true" className="hn hn-folder text-[1.6rem]"></i>
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 !text-[0.5rem] whitespace-nowrap">
+                {formatMonthDay(n.date)}
+              </span>
+            </button>
+          ))
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center gap-2">
             <i aria-hidden="true" className="hn hn-folder text-[1.6rem]"></i>
-            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 !text-[0.5rem] whitespace-nowrap">
-              {formatMonthDay(n.date)}
-            </span>
-          </button>
-        ))}
+            <span className="!text-xxxs tracking-wider">NO RECORD</span>
+          </div>
+        )
+      ) : null}
     </section>
   );
 }
