@@ -1,5 +1,6 @@
 /* 날짜 변환 함수 */
-export function formatTimestamp(raw: string) {
+export function formatTimestamp(raw: string | undefined) {
+  if (!raw) return;
   const date = new Date(raw);
 
   const datePart = new Intl.DateTimeFormat("en-US", {

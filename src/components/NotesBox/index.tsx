@@ -10,7 +10,7 @@ import { useNotes } from "@/hooks/useNotes";
 export default function NotesBox() {
   const countryCode = useClickStore((s) => s.countryCode);
 
-  const { fetchNotesByCountryCode } = useNotes();
+  const { fetchNotesByCountryCode, fetchNote } = useNotes();
   const { data: notes, isLoading } = fetchNotesByCountryCode(countryCode);
 
   const containerRef = useRef<HTMLDivElement>(null);

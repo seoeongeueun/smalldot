@@ -43,8 +43,11 @@ export function useNotes() {
 
   // 아무 필드나 첨부된 값을 수정
   const updateNote = useMutation({
-    mutationFn: async (payload: { id: string } & Partial<Note>) => {
-      const { id, ...fieldsToUpdate } = payload;
+    //country_code는 오로지 쿼리 갱신용으로만 쓰기 때문에 분리
+    mutationFn: async (
+      payload: { id: string; country_code: string } & Partial<Note>
+    ) => {
+      const { id, country_code, ...fieldsToUpdate } = payload;
       const { data, error } = await supabase
         .from("notes")
         .update(fieldsToUpdate)
@@ -53,8 +56,17 @@ export function useNotes() {
       if (error) throw error;
       return data;
     },
-    onSuccess: (_data, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ["note", id] });
+    onSuccess: (_data, variables) => {
+      //캐싱된 목록에서 수정된 노트만 수정 사항을 반영
+      queryClient.setQueryData<Note[]>(
+        ["notes", variables.country_code],
+        (prev) =>
+          prev
+            ? prev.map((n) =>
+                n.id === variables.id ? { ...n, ...variables } : n
+              )
+            : []
+      );
     },
   });
 

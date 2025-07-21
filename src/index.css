@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "react-day-picker/dist/style.css";
 
 @theme {
   /* min width 기준 breakpoints */
@@ -49,6 +50,64 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.rdp-root {
+  --rdp-accent-color: var(--theme);
+  --rdp-selected-border: 1px solid var(--theme);
+  --rdp-accent-background-color: transparent;
+  --rdp-weekday-opacity: 1;
+  --rdp-day_button-border-radius: 1px;
+  --rdp-day_button-height: 100%;
+  --rdp-day_button-width: 100%;
+  --rdp-day-width: 100%;
+  --rdp-day-height: 100%;
+  --rdp-nav-height: 1.5rem;
+}
+
+.rdp-day > button {
+  padding: 0.2rem;
+}
+
+.rdp-today .rdp-day_button::after {
+  content: "TODAY";
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+}
+
+.rdp-today .rdp-day_button {
+  display: flex;
+  flex-direction: column;
+}
+
+.rdp-selected {
+  font-size: medium;
+}
+
+.rdp-chevron {
+  margin-left: 2px;
+  width: 14px;
+  height: 14px;
+}
+
+.calendar::before {
+  content: "";
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 12px solid white;
+  position: absolute;
+  left: 6px;
+  bottom: -12px;
+}
+
+.calendar::after {
+  content: "";
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 8px solid rgba(0, 0, 0, 0.8);
+  position: absolute;
+  left: 8px;
+  bottom: -8px;
 }
 
 body,
