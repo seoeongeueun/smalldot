@@ -14,10 +14,16 @@ type ClickStore = {
     lon: number;
     feature: ClickFeature;
   } | null;
+  countryCode: string | null;
   setClick: (lat: number, lon: number, feature: ClickFeature) => void;
 };
 
 export const useClickStore = create<ClickStore>((set) => ({
   click: null,
-  setClick: (lat, lon, feature) => set({ click: { lat, lon, feature } }),
+  countryCode: null,
+  setClick: (lat, lon, feature) =>
+    set({
+      click: { lat, lon, feature },
+      countryCode: feature?.properties?.iso_a3 || null,
+    }),
 }));
