@@ -6,4 +6,5 @@ export type Note = {
   country_code: string;
   date: string;
   created_at: string;
+  updated_at?: string;
 };
