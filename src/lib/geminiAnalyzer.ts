@@ -7,6 +7,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
 
 //주어진 텍스트를 제미나이 분석 후 핵심 요약 단어 추출
 export async function getKeywordsFromText(text: string) {
+  console.log(text);
   if (!text || text.trim() === "") {
     return "";
   }
@@ -30,6 +31,8 @@ export async function getKeywordsFromText(text: string) {
   try {
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
+
+    console.log(responseText);
 
     // // 응답 텍스트에서 핵심 단어만 파싱
     // const keywords = responseText

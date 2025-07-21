@@ -8,7 +8,6 @@ import { useToastStore } from "@/stores/toastStore";
 import { DayPicker } from "react-day-picker";
 import { isSameDay } from "date-fns";
 import { getKeywordsFromText } from "@/lib/geminiAnalyzer";
-import NotesBox from "../NotesBox";
 
 type Mode = "edit" | "delete" | "default";
 
@@ -29,8 +28,8 @@ export default function Note() {
     note?.content.length ?? 0
   );
 
-  const TEXT_DIFF_RATIO = 0.4; // 글자 수가 바뀐 정도 기준 (현재 40%)
-  const TEXT_TIME_DIFF = 40_000; // 마지막으로 업데이트 된 시각과의 최소 차이 (현재 4초)
+  const TEXT_DIFF_RATIO = 0.2; // 글자 수가 바뀐 정도 기준 (현재 20%)
+  const TEXT_TIME_DIFF = 30_000; // 마지막으로 업데이트 된 시각과의 최소 차이 (현재 30초)
 
   useEffect(() => {
     const noteBox = noteRef.current;
@@ -77,17 +76,17 @@ export default function Note() {
         TEXT_DIFF_RATIO;
 
     console.log(
-      "Text diff ratio: ",
-      Math.abs(contentLength - note.content.length) / contentLength
+      shouldUpdateTitle,
+      Math.abs(contentLength - note.content.length) / contentLength,
+      Date.now() - new Date(note.updated_at!).getTime()
     );
 
     let newTitle = note.title;
 
     try {
       if (shouldUpdateTitle) {
-        newTitle = (await getKeywordsFromText(note.content)) || "hep";
+        newTitle = (await getKeywordsFromText(note.content)) || note.title;
       }
-      console.log(newTitle);
 
       await updateNote.mutateAsync({
         id: note.id,

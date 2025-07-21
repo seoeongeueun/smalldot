@@ -18,11 +18,12 @@ export default function NotesBox() {
 
   useEffect(() => {
     const buttons = containerRef.current?.querySelectorAll("button");
-    if (!buttons) return;
+    if (!buttons || buttons.length === 0) return;
 
-    gsap.set(buttons, { opacity: 0, y: 20 });
+    const btnArray = Array.from(buttons);
 
-    gsap.to(buttons, {
+    gsap.set(btnArray, { opacity: 0, y: 20 });
+    gsap.to(btnArray, {
       opacity: 1,
       delay: 0.2,
       y: 0,
@@ -49,6 +50,7 @@ export default function NotesBox() {
         notes && notes.length > 0 ? (
           notes.map((n: Note) => (
             <button
+              key={n.id}
               type="button"
               onClick={() => handleOpenNote(n)}
               className={clsx(
