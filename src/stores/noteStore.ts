@@ -5,14 +5,14 @@ import type { Note } from "@/types/database";
 interface NoteStore {
   note: Note | null;
   setNote: (note: Note) => void;
-  editNote: <K extends keyof Note>(key: K, value: Note[K]) => void;
+  editNote: (fields: Partial<Note>) => void;
   reset: () => void;
 }
 
 export const useNoteStore = create<NoteStore>((set) => ({
   note: null,
   setNote: (note: Note) => set({ note }),
-  editNote: (key, value) =>
-    set((s) => (s.note ? { note: { ...s.note, [key]: value } } : {})),
+  editNote: (fields) =>
+    set((s) => (s.note ? { note: { ...s.note, ...fields } } : {})),
   reset: () => set({ note: null }),
 }));

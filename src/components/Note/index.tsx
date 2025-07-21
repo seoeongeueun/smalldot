@@ -7,6 +7,8 @@ import { useNotes } from "@/hooks/useNotes";
 import { useToastStore } from "@/stores/toastStore";
 import { DayPicker } from "react-day-picker";
 import { isSameDay } from "date-fns";
+import { getKeywordsFromText } from "@/lib/geminiAnalyzer";
+import NotesBox from "../NotesBox";
 
 type Mode = "edit" | "delete" | "default";
 
@@ -19,11 +21,22 @@ export default function Note() {
   const [openCalendar, setOpenCalendar] = useState<boolean>(false);
   const [mode, setMode] = useState<Mode>("default");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+
   const noteRef = useRef<HTMLFormElement>(null);
+
+  //처음 로드 되었을 때 글자 수를 저장 (나중에 얼마나 바꼈는지 계산하는 용도)
+  const [contentLength, setContentLength] = useState<number>(
+    note?.content.length ?? 0
+  );
+
+  const TEXT_DIFF_RATIO = 0.4; // 글자 수가 바뀐 정도 기준 (현재 40%)
+  const TEXT_TIME_DIFF = 40_000; // 마지막으로 업데이트 된 시각과의 최소 차이 (현재 4초)
 
   useEffect(() => {
     const noteBox = noteRef.current;
     if (!noteBox) return;
+
+    setContentLength(note?.content.length ?? 0);
 
     gsap.set(noteBox, {
       opacity: 0,
@@ -56,14 +69,40 @@ export default function Note() {
       return;
     }
 
+    //최소 40초 이상 전에 마지막으로 수정되었고 글자 수가 기준 이상 변한 경우에만 제미나이로 타이틀 갱신
+    let shouldUpdateTitle =
+      note?.updated_at &&
+      Date.now() - new Date(note.updated_at).getTime() >= TEXT_TIME_DIFF &&
+      Math.abs(contentLength - note.content.length) / contentLength >=
+        TEXT_DIFF_RATIO;
+
+    console.log(
+      "Text diff ratio: ",
+      Math.abs(contentLength - note.content.length) / contentLength
+    );
+
+    let newTitle = note.title;
+
     try {
+      if (shouldUpdateTitle) {
+        newTitle = (await getKeywordsFromText(note.content)) || "hep";
+      }
+      console.log(newTitle);
+
       await updateNote.mutateAsync({
         id: note.id,
+        title: newTitle,
         content: note.content,
         date: selectedDate?.toISOString() ?? note.date,
         country_code: note.country_code,
       });
-      editNote("date", selectedDate?.toISOString() ?? note.date);
+
+      editNote({
+        title: newTitle,
+        date: selectedDate?.toISOString() ?? note.date,
+        updated_at: new Date().toISOString(),
+      });
+      setContentLength(note.content.length); //수정 되었으니까 글자 수도 갱신
       setToast("Saved");
     } catch (error) {
       setToast("Failed to save", true);
@@ -182,7 +221,7 @@ export default function Note() {
         id="note-text"
         readOnly={mode !== "edit"}
         value={note?.content ?? ""}
-        onChange={(e) => editNote("content", e.target.value)}
+        onChange={(e) => editNote({ content: e.target.value })}
         rows={10}
       ></textarea>
       {mode === "edit" ? (
