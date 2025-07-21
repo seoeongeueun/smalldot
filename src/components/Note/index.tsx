@@ -95,20 +95,10 @@ export default function Note() {
     <article
       ref={noteRef}
       id="note-container"
-      className="z-30 pointer-events-auto w-[92%] sm:w-1/2 min-w-60 p-4 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-h-1/2 h-fit text-white border border-px rounded-xs border-theme bg-black/70 backdrop-blur-xs flex flex-col items-start justify-start gap-1"
+      className="z-30 pointer-events-auto w-60 p-4 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-h-1/2 h-fit text-white border border-px rounded-xs border-theme bg-black/70 backdrop-blur-xs flex flex-col items-start justify-start gap-1"
     >
       <header className="flex flex-row justify-end items-center w-full">
-        {mode === "edit" ? (
-          <textarea
-            rows={1}
-            className="mr-2 w-full "
-            value={
-              "Title Title Title Title Title Title Title Title Title Title Title Title"
-            }
-          ></textarea>
-        ) : (
-          <h2 className="mr-auto line-clamp-1">{note?.title}</h2>
-        )}
+        <h2 className="mr-auto line-clamp-1 p-1">{note?.title}</h2>
 
         <div className="flex flex-row items-center gap-1">
           <div
