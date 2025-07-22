@@ -258,7 +258,7 @@ export default function Note() {
             <dialog
               id="calendar-dialog"
               open
-              className="calendar z-40 absolute bottom-[2.2rem] left-[calc(100%-1.5rem)] max-w-50 w-fit bg-black/80 backdrop-blur-xs p-3 rounded-px border border-px border-white"
+              className="calendar z-40 absolute bottom-[2.2rem] left-[calc(100%-1.5rem)] max-w-50 w-fit bg-black/80 backdrop-blur-xs p-3 rounded-xs border border-px border-white"
             >
               <DayPicker
                 mode="single"

@@ -211,11 +211,6 @@ span {
 }
 
 /* 버튼 설정 */
-button:hover {
-  color: var(--theme);
-  cursor: pointer;
-}
-
 button {
-  @apply flex items-center justify-center;
+  @apply flex items-center justify-center transition-colors duration-200 hover:cursor-pointer hover:text-theme;
 }

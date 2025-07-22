@@ -12,6 +12,7 @@ import NotesBox from "./components/NotesBox";
 import "@hackernoon/pixel-icon-library/fonts/iconfont.css"; //픽셀 아이콘 라이브러리
 import gsap from "gsap";
 import { useNoteStore } from "./stores/noteStore";
+import SideBar from "./components/SideBar";
 
 export default function App() {
   const menuRef = useRef<HTMLDivElement>(null);
@@ -86,6 +87,7 @@ export default function App() {
         <GlobeMesh />
         <StarField />
       </Canvas>
+      <SideBar />
       {note && <Note />}
       {click?.feature && (
         <section
