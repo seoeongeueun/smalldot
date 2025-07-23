@@ -220,7 +220,10 @@ export default function SideBar() {
           <section className="whitespace-prewrap break-all flex flex-col gap-3">
             <div className="flex flex-row items-center max-w-[calc(100%-2rem)] uppercase gap-2 tracking-wide">
               <h3>AGENT</h3>{" "}
-              <h3 className="scramble-text" data-text="username"></h3>
+              <h3
+                className="scramble-text text-theme"
+                data-text="burglarpants"
+              ></h3>
             </div>
             <dl className="text-sm uppercase space-y-1">
               <div className="flex flex-row gap-2 justify-start items-center">

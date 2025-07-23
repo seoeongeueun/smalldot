@@ -13,6 +13,7 @@ import "@hackernoon/pixel-icon-library/fonts/iconfont.css"; //픽셀 아이콘 �
 import gsap from "gsap";
 import { useNoteStore } from "./stores/noteStore";
 import SideBar from "./components/SideBar";
+import CameraSpin from "./components/CameraSpin";
 
 export default function App() {
   const menuRef = useRef<HTMLDivElement>(null);
@@ -83,7 +84,7 @@ export default function App() {
       >
         <ambientLight intensity={0.4} />
         <directionalLight position={[1, 1, 10]} intensity={0.3} castShadow />
-        <OrbitControls enableZoom={true} />
+        <CameraSpin />
         <GlobeMesh />
         <StarField />
       </Canvas>
