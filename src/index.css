@@ -143,6 +143,10 @@ span {
   font-size: 0.9rem;
 }
 
+h3 > span {
+  font-size: 1.5rem;
+}
+
 @media screen and (max-width: theme(--breakpoint-md)) {
   h1 {
     font-size: 1.5rem;
@@ -162,6 +166,10 @@ span {
 
   span {
     font-size: 0.9rem;
+  }
+
+  h3 > span {
+    font-size: 1.1rem;
   }
 }
 
@@ -213,4 +221,15 @@ span {
 /* 버튼 설정 */
 button {
   @apply flex items-center justify-center transition-colors duration-200 hover:cursor-pointer hover:text-theme;
+}
+
+/* 스크램블 중인 글자 스타일 */
+.scramble-letter {
+  display: inline-block;
+  opacity: 0.5;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.scramble-letter.revealed {
+  opacity: 1;
 }

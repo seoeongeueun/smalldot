@@ -40,13 +40,15 @@ export default function Note() {
     gsap.set(noteBox, {
       opacity: 0,
       y: 50,
+      height: 0,
     });
 
     gsap.to(noteBox, {
       opacity: 1,
       y: 0,
-      duration: 0.5,
-      ease: "back.out(1.7)",
+      height: "auto",
+      duration: 0.6,
+      ease: "back.out(1.3)",
     });
   }, [note?.id]);
 
