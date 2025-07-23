@@ -9,8 +9,7 @@ export default function SideBar() {
   const [openSideBar, setOpenSideBar] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const sideBarRef = useRef<HTMLDivElement>(null);
-  const timeouts = useRef<number[]>([]);
-  const intervals = useRef<number[]>([]);
+  const numberRef = useRef<HTMLElement>(null);
 
   gsap.registerPlugin(ScrambleTextPlugin);
 
@@ -45,11 +44,12 @@ export default function SideBar() {
     const timeouts: number[] = [];
     const intervals: number[] = [];
 
-    const CHARS =
+    const CHARS: string =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    const DELAY_MS = 3000;
-    const SCRAMBLE_DURATION = 1000;
-    const START_DELAY: [number, number] = [1000, 3000];
+    const DELAY_MS: number = 3000;
+    const SCRAMBLE_DURATION: number = isLogin ? 800 : 1000;
+    const START_DELAY: [number, number] = isLogin ? [200, 500] : [1000, 3000];
+    const LOOP_OPTION: boolean = !isLogin; //비로그인 상태일 때만 애니메이션 반복
 
     const normalize = (t: string) =>
       t
@@ -107,14 +107,16 @@ export default function SideBar() {
           const isFullyRestored =
             normalize(spans.map((s) => s.textContent).join("")) ===
             normalize(originalText);
-          console.log(isFullyRestored);
+
           if (allRevealed && isFullyRestored) {
             clearInterval(interval);
-            const timeout = window.setTimeout(() => {
-              removeSpans();
-              scrambleOnce(); // 🔁 반복
-            }, DELAY_MS + getRandomDelay());
-            timeouts.push(timeout);
+            if (LOOP_OPTION) {
+              const timeout = window.setTimeout(() => {
+                removeSpans();
+                scrambleOnce(); // 반복
+              }, DELAY_MS + getRandomDelay());
+              timeouts.push(timeout);
+            }
           }
         }, 50);
 
@@ -138,11 +140,31 @@ export default function SideBar() {
       runScrambleLoop(el, originalText);
     });
 
+    const number = numberRef.current;
+    if (number) {
+      const obj = { val: 0 };
+      const target = 9;
+
+      gsap.to(obj, {
+        val: target, // 최종 숫자
+        duration: 0.8,
+        ease: "power1.out",
+        onUpdate: () => {
+          number.textContent = Math.floor(obj.val).toString();
+          if (Math.floor(obj.val) === target) {
+            number.style.opacity = "1";
+          } else {
+            number.style.opacity = "0.5"; // 변화 중일 때 투명하게
+          }
+        },
+      });
+    }
+
     return () => {
       timeouts.forEach(clearTimeout);
       intervals.forEach(clearInterval);
     };
-  }, [openSideBar]);
+  }, [openSideBar, isLogin]);
 
   useEffect(() => {
     console.log("[Scramble Effect] mounted");
@@ -197,23 +219,32 @@ export default function SideBar() {
         {isLogin ? (
           <section className="whitespace-prewrap break-all flex flex-col gap-3">
             <div className="flex flex-row items-center max-w-[calc(100%-2rem)] uppercase gap-2 tracking-wide">
-              <h3>AGENT</h3> <h3>USERNAME</h3>
+              <h3>AGENT</h3>{" "}
+              <h3 className="scramble-text" data-text="username"></h3>
             </div>
             <dl className="text-sm uppercase space-y-1">
               <div className="flex flex-row gap-2 justify-start items-center">
                 <i className="hn hn-envelope text-[0.8rem] mb-px"></i>
                 <dt className="font-medium">Email:</dt>
-                <dd className="ml-auto">{maskEmail("username@gmail.com")}</dd>
+                <dd
+                  className="ml-auto scramble-text"
+                  data-text={maskEmail("username@gmail.com")}
+                ></dd>
               </div>
               <div className="flex flex-row gap-2 justify-start items-center">
                 <i className="hn hn-folder-open text-[0.8rem] mb-px"></i>
                 <dt className="font-medium">Total Notes:</dt>
-                <dd className="ml-auto">9</dd>
+                <dd
+                  ref={numberRef}
+                  className="ml-auto scramble-number transition-opacity duration-300"
+                >
+                  0
+                </dd>
               </div>
               <div className="flex flex-row gap-2 justify-start items-center">
                 <i className="hn hn-globe-americas text-[0.8rem] mb-px"></i>
                 <dt className="font-medium">Most Visited Country:</dt>
-                <dd className="ml-auto">KOR</dd>
+                <dd className="ml-auto scramble-text" data-text="KOR"></dd>
               </div>
             </dl>
             <button
