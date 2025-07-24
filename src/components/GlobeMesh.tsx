@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as THREE from "three";
 import * as turf from "@turf/turf";
 import GlobeLines from "./GlobeLines";
@@ -20,6 +20,7 @@ import { useNotes } from "@/hooks/useNotes";
 import TextLabel from "./TextLabel";
 import GridCells from "./GridCells";
 import type { TextPlacement, GridCell } from "@/types/globe";
+import { Suspense } from "react";
 
 export default function GlobeMesh() {
   const geojson = useGeoStore((s) => s.geojson);
@@ -32,6 +33,13 @@ export default function GlobeMesh() {
 
   const [textPlacements, setTextPlacements] = useState<TextPlacement[]>([]);
   const [gridCells, setGridCells] = useState<GridCell[]>([]);
+  const [selectedPolygon, setSelectedPolygon] =
+    useState<Feature<Polygon> | null>(null);
+
+  // notes가 준비되면 자동으로 텍스트 메쉬 생성
+  useEffect(() => {
+    if (selectedPolygon) createPolygonTextMeshes();
+  }, [selectedPolygon, notes]);
 
   function handlePointerDown(event: ThreeEvent<PointerEvent>) {
     event.stopPropagation();
@@ -56,7 +64,7 @@ export default function GlobeMesh() {
         const coords = geometry.coordinates as number[][][];
         const polygon = turf.polygon(coords);
         if (turf.booleanPointInPolygon(clickedPoint, polygon)) {
-          createPolygonTextMeshes(polygon);
+          setSelectedPolygon(polygon);
           foundFeature = feature as Feature<Polygon, GeoJsonProperties>;
           break;
         }
@@ -65,11 +73,13 @@ export default function GlobeMesh() {
         for (const polyCoords of coords) {
           const polygon = turf.polygon(polyCoords);
           if (turf.booleanPointInPolygon(clickedPoint, polygon)) {
-            //createPolygonTextMeshes(polygon, feature.properties?.name);
+            setSelectedPolygon(polygon);
             foundFeature = feature as Feature<MultiPolygon, GeoJsonProperties>;
             break;
           }
         }
+      } else {
+        setSelectedPolygon(null);
       }
       if (foundFeature) break;
     }
@@ -93,15 +103,13 @@ export default function GlobeMesh() {
 
   // 나라 면적을 그리드로 만들고 제목 텍스트를 내부에 배치하는 로직
   // 현재 줄바꿈은 고려하지 않고 한 줄에 제목 전체가 전부 들어가는 경우에만 배치한다
-  function createPolygonTextMeshes(polygon: Feature<Polygon>) {
-    if (!notes?.length) return;
+  function createPolygonTextMeshes() {
+    if (!selectedPolygon) return;
 
-    const titles = notes
-      .map((note) => note.title.trim()) // 앞뒤 공백 포함 \n 제거
-      .filter((title) => !!title) // 빈 문자열 제거
-      .sort((a, b) => b.length - a.length); // 긴 것부터 내림차순
-
-    const coords = polygon.geometry.coordinates[0] as [number, number][];
+    const coords = selectedPolygon.geometry.coordinates[0] as [
+      number,
+      number
+    ][];
     const minLng = Math.min(...coords.map(([lng]) => lng));
     const maxLng = Math.max(...coords.map(([lng]) => lng));
     const minLat = Math.min(...coords.map(([, lat]) => lat));
@@ -117,6 +125,57 @@ export default function GlobeMesh() {
     const grid: (string | null)[][] = Array.from({ length: gridRows }, () =>
       Array(gridCols).fill(null)
     );
+
+    //그리드 셀을 나라 위에 노출할 때만 사용
+    // const newGridCells: GridCell[] = [];
+    // for (let row = 0; row < gridRows; row++) {
+    //   for (let col = 0; col < gridCols; col++) {
+    //     if (!isInside(row, col)) continue;
+
+    //     const lngCenter = minLng + col * lngStep + lngStep / 2;
+    //     const latCenter = maxLat - row * latStep - latStep / 2;
+
+    //     const halfLng = lngStep / 2;
+    //     const halfLat = latStep / 2;
+
+    //     const corners: [number, number][] = [
+    //       [lngCenter - halfLng, latCenter + halfLat],
+    //       [lngCenter + halfLng, latCenter + halfLat],
+    //       [lngCenter + halfLng, latCenter - halfLat],
+    //       [lngCenter - halfLng, latCenter - halfLat],
+    //       [lngCenter - halfLng, latCenter + halfLat],
+    //     ];
+
+    //     const toXYZ = ([lng, lat]: [number, number]) => {
+    //       const phi = ((90 - lat) * Math.PI) / 180;
+    //       const theta = (-(lng + 180) * Math.PI) / 180;
+    //       return new THREE.Vector3(
+    //         1.011 * Math.sin(phi) * Math.cos(theta),
+    //         1.011 * Math.cos(phi),
+    //         1.011 * Math.sin(phi) * Math.sin(theta)
+    //       );
+    //     };
+
+    //     //const points = corners.map(toXYZ);
+    //     const points = corners.map(toXYZ) as [
+    //       THREE.Vector3,
+    //       THREE.Vector3,
+    //       THREE.Vector3,
+    //       THREE.Vector3,
+    //       THREE.Vector3
+    //     ];
+
+    //     newGridCells.push({ points });
+    //   }
+    // }
+    // setGridCells(newGridCells);
+
+    if (!notes?.length) return;
+
+    const titles = notes
+      .map((note) => note.title.trim()) // 앞뒤 공백 포함 \n 제거
+      .filter((title) => !!title) // 빈 문자열 제거
+      .sort((a, b) => b.length - a.length); // 긴 것부터 내림차순
     const placements: TextPlacement[] = [];
 
     //나라 면적 내부에 들어가는지 계산
@@ -125,7 +184,7 @@ export default function GlobeMesh() {
       const latCenter = maxLat - row * latStep - latStep / 2;
       return turf.booleanPointInPolygon(
         turf.point([lngCenter, latCenter]),
-        polygon
+        selectedPolygon!
       );
     }
 
@@ -245,64 +304,32 @@ export default function GlobeMesh() {
     }
 
     setTextPlacements(placements);
-
-    //그리드 셀 위치를 저장
-    const newGridCells: GridCell[] = [];
-    for (let row = 0; row < gridRows; row++) {
-      for (let col = 0; col < gridCols; col++) {
-        if (!isInside(row, col)) continue;
-
-        const lngCenter = minLng + col * lngStep + lngStep / 2;
-        const latCenter = maxLat - row * latStep - latStep / 2;
-
-        const halfLng = lngStep / 2;
-        const halfLat = latStep / 2;
-
-        const corners: [number, number][] = [
-          [lngCenter - halfLng, latCenter + halfLat],
-          [lngCenter + halfLng, latCenter + halfLat],
-          [lngCenter + halfLng, latCenter - halfLat],
-          [lngCenter - halfLng, latCenter - halfLat],
-          [lngCenter - halfLng, latCenter + halfLat],
-        ];
-
-        const toXYZ = ([lng, lat]: [number, number]) => {
-          const phi = ((90 - lat) * Math.PI) / 180;
-          const theta = (-(lng + 180) * Math.PI) / 180;
-          return new THREE.Vector3(
-            1.011 * Math.sin(phi) * Math.cos(theta),
-            1.011 * Math.cos(phi),
-            1.011 * Math.sin(phi) * Math.sin(theta)
-          );
-        };
-
-        //const points = corners.map(toXYZ);
-        const points = corners.map(toXYZ) as [
-          THREE.Vector3,
-          THREE.Vector3,
-          THREE.Vector3,
-          THREE.Vector3,
-          THREE.Vector3
-        ];
-
-        newGridCells.push({ points });
-      }
-    }
-
-    setGridCells(newGridCells);
   }
 
   return (
     <>
       <mesh receiveShadow onPointerDown={handlePointerDown}>
         <sphereGeometry args={[1, 64, 64]} />
-        <meshStandardMaterial color="steelblue" transparent opacity={0.7} />
+        <meshStandardMaterial
+          color="steelblue"
+          transparent
+          opacity={0.7}
+          depthWrite={false}
+        />
       </mesh>
       <GlobeLines />
-      {textPlacements.map((t, i) => (
-        <TextLabel key={i} {...t} />
-      ))}
-      <GridCells lines={gridCells} />
+      {/* suspense로 비동기 로딩이 완료되면 렌더링 하는 것으로 깜빡임 방지 */}
+      {
+        <Suspense fallback={null}>
+          {textPlacements.map((p) => (
+            <TextLabel
+              key={`${p.letter}-${p.position[0]}-${p.position[1]}-${p.position[2]}`}
+              {...p}
+            />
+          ))}
+          {/* <GridCells lines={gridCells} /> */}
+        </Suspense>
+      }
       <PinMarker />
     </>
   );
