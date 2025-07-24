@@ -1,18 +1,13 @@
 // 나라 면적 위에 배치될 글자 컴포넌트
 import { Text } from "@react-three/drei";
-import * as THREE from "three";
+import type { TextPlacement } from "@/types/globe";
 
 export default function TextLabel({
   letter,
   position,
   rotation,
   fontSize,
-}: {
-  letter: string;
-  position: [x: number, y: number, z: number];
-  rotation: THREE.Euler;
-  fontSize: number;
-}) {
+}: TextPlacement) {
   return (
     <Text
       font="/fonts/Galmuri11-Condensed.ttf"

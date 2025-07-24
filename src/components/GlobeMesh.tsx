@@ -2,8 +2,6 @@ import React from "react";
 import { useState } from "react";
 import * as THREE from "three";
 import * as turf from "@turf/turf";
-import { useThree } from "@react-three/fiber";
-import { Text, Line } from "@react-three/drei";
 import GlobeLines from "./GlobeLines";
 import { ThreeEvent } from "@react-three/fiber";
 import type {
@@ -20,14 +18,8 @@ import { fetchNotesByCountryCodeFn } from "@/api/noteFetchers";
 import { cartesianToLatLon } from "@/utils/helpers";
 import { useNotes } from "@/hooks/useNotes";
 import TextLabel from "./TextLabel";
-
-//TextLabel에 사용될 정보
-export interface TextPlacement {
-  letter: string;
-  position: [number, number, number];
-  rotation: THREE.Euler;
-  fontSize: number;
-}
+import GridCells from "./GridCells";
+import type { TextPlacement, GridCell } from "@/types/globe";
 
 export default function GlobeMesh() {
   const geojson = useGeoStore((s) => s.geojson);
@@ -39,7 +31,7 @@ export default function GlobeMesh() {
   const { data: notes, isLoading } = fetchNotesByCountryCode(countryCode);
 
   const [textPlacements, setTextPlacements] = useState<TextPlacement[]>([]);
-  const [gridLines, setGridLines] = useState<React.JSX.Element[]>([]);
+  const [gridCells, setGridCells] = useState<GridCell[]>([]);
 
   function handlePointerDown(event: ThreeEvent<PointerEvent>) {
     event.stopPropagation();
@@ -254,51 +246,50 @@ export default function GlobeMesh() {
 
     setTextPlacements(placements);
 
-    // for (let row = 0; row < gridRows; row++) {
-    //   for (let col = 0; col < gridCols; col++) {
-    //     if (!isInside(row, col)) continue;
+    //그리드 셀 위치를 저장
+    const newGridCells: GridCell[] = [];
+    for (let row = 0; row < gridRows; row++) {
+      for (let col = 0; col < gridCols; col++) {
+        if (!isInside(row, col)) continue;
 
-    //     const lngCenter = minLng + col * lngStep + lngStep / 2;
-    //     const latCenter = maxLat - row * latStep - latStep / 2;
+        const lngCenter = minLng + col * lngStep + lngStep / 2;
+        const latCenter = maxLat - row * latStep - latStep / 2;
 
-    //     const halfLng = lngStep / 2;
-    //     const halfLat = latStep / 2;
+        const halfLng = lngStep / 2;
+        const halfLat = latStep / 2;
 
-    //     const corners: [number, number][] = [
-    //       [lngCenter - halfLng, latCenter + halfLat],
-    //       [lngCenter + halfLng, latCenter + halfLat],
-    //       [lngCenter + halfLng, latCenter - halfLat],
-    //       [lngCenter - halfLng, latCenter - halfLat],
-    //       [lngCenter - halfLng, latCenter + halfLat],
-    //     ];
+        const corners: [number, number][] = [
+          [lngCenter - halfLng, latCenter + halfLat],
+          [lngCenter + halfLng, latCenter + halfLat],
+          [lngCenter + halfLng, latCenter - halfLat],
+          [lngCenter - halfLng, latCenter - halfLat],
+          [lngCenter - halfLng, latCenter + halfLat],
+        ];
 
-    //     const toXYZ = ([lng, lat]: [number, number]) => {
-    //       const phi = ((90 - lat) * Math.PI) / 180;
-    //       const theta = (-(lng + 180) * Math.PI) / 180;
-    //       return new THREE.Vector3(
-    //         1.011 * Math.sin(phi) * Math.cos(theta),
-    //         1.011 * Math.cos(phi),
-    //         1.011 * Math.sin(phi) * Math.sin(theta)
-    //       );
-    //     };
+        const toXYZ = ([lng, lat]: [number, number]) => {
+          const phi = ((90 - lat) * Math.PI) / 180;
+          const theta = (-(lng + 180) * Math.PI) / 180;
+          return new THREE.Vector3(
+            1.011 * Math.sin(phi) * Math.cos(theta),
+            1.011 * Math.cos(phi),
+            1.011 * Math.sin(phi) * Math.sin(theta)
+          );
+        };
 
-    //     const points = corners.map(toXYZ);
+        //const points = corners.map(toXYZ);
+        const points = corners.map(toXYZ) as [
+          THREE.Vector3,
+          THREE.Vector3,
+          THREE.Vector3,
+          THREE.Vector3,
+          THREE.Vector3
+        ];
 
-    //     gridLines.push(
-    //       <Line
-    //         key={`grid-${row}-${col}`}
-    //         points={points}
-    //         color="#00ffcc"
-    //         lineWidth={0.25}
-    //         transparent
-    //         opacity={0.2}
-    //       />
-    //     );
-    //   }
-    // }
+        newGridCells.push({ points });
+      }
+    }
 
-    //setTextMeshes([...textMeshes, ...gridLines]);
-    //setTextMeshes(textMeshes);
+    setGridCells(newGridCells);
   }
 
   return (
@@ -311,6 +302,7 @@ export default function GlobeMesh() {
       {textPlacements.map((t, i) => (
         <TextLabel key={i} {...t} />
       ))}
+      <GridCells lines={gridCells} />
       <PinMarker />
     </>
   );
