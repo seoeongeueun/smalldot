@@ -14,7 +14,7 @@ export default function CameraSpin() {
 
     const startZ = 8;
     const endZ = 2.5;
-    const rotationDuration = 3.5;
+    const rotationDuration = 2;
     const zoomDuration = 2;
 
     // 초기 카메라 설정
@@ -50,7 +50,7 @@ export default function CameraSpin() {
           camera.lookAt(0, 0, 0);
         },
         onComplete: () => {
-          localStorage.setItem("landed", "true");
+          sessionStorage.setItem("landed", "true");
         },
       },
       0
