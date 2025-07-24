@@ -17,17 +17,8 @@
 }
 
 @font-face {
-  font-family: "Cafe24PROUP";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2507-1@1.0/Cafe24PROUP.woff2")
-    format("woff2");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
   font-family: "Galmuri11-Condensed";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2506-1@1.0/Galmuri11-Condensed.woff2")
-    format("woff2");
+  src: url("/fonts/Galmuri11-Condensed.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
