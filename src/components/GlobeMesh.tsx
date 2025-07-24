@@ -18,9 +18,9 @@ import { fetchNotesByCountryCodeFn } from "@/api/noteFetchers";
 import { cartesianToLatLon } from "@/utils/helpers";
 import { useNotes } from "@/hooks/useNotes";
 import TextLabel from "./TextLabel";
-import GridCells from "./GridCells";
 import type { TextPlacement, GridCell } from "@/types/globe";
 import { Suspense } from "react";
+import { TEXT_LABEL_OPTIONS } from "@/utils/constants";
 
 export default function GlobeMesh() {
   const geojson = useGeoStore((s) => s.geojson);
@@ -115,10 +115,12 @@ export default function GlobeMesh() {
     const minLat = Math.min(...coords.map(([, lat]) => lat));
     const maxLat = Math.max(...coords.map(([, lat]) => lat));
 
-    //그리드 셀 사이즈를 상수로 저장
-    const cellSize = 1;
-    const gridCols = Math.ceil((maxLng - minLng) / cellSize);
-    const gridRows = Math.ceil((maxLat - minLat) / cellSize);
+    const gridCols = Math.ceil(
+      (maxLng - minLng) / TEXT_LABEL_OPTIONS.CELL_SIZE
+    );
+    const gridRows = Math.ceil(
+      (maxLat - minLat) / TEXT_LABEL_OPTIONS.CELL_SIZE
+    );
     const lngStep = (maxLng - minLng) / gridCols;
     const latStep = (maxLat - minLat) / gridRows;
 
@@ -268,7 +270,7 @@ export default function GlobeMesh() {
                 Math.sin(phi) * Math.sin(theta2)
               );
               const cellWidth = v1.distanceTo(v2);
-              const fontSize = cellWidth * 1.2;
+              const fontSize = cellWidth * TEXT_LABEL_OPTIONS.FONT_MULTIPLIER;
 
               const radius = 1.011;
               const x = radius * Math.sin(phi) * Math.cos(theta);

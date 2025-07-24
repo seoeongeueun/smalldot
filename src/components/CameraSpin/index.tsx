@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import gsap from "gsap";
+import { CAMERA_OPTIONS } from "@/utils/constants";
 
 export default function CameraSpin() {
   const { camera } = useThree();
@@ -12,23 +13,18 @@ export default function CameraSpin() {
 
     if (hasLanded === "true") return;
 
-    const startZ = 8;
-    const endZ = 2.5;
-    const rotationDuration = 2;
-    const zoomDuration = 2;
-
     // 초기 카메라 설정
-    camera.position.set(0, 0, startZ);
+    camera.position.set(0, 0, CAMERA_OPTIONS.START_Z);
     camera.lookAt(0, 0, 0);
 
-    const data = { theta: 0, z: startZ };
+    const data = { theta: 0, z: CAMERA_OPTIONS.START_Z };
     const tl = gsap.timeline();
 
     tl.to(
       data,
       {
         theta: Math.PI * 2,
-        duration: rotationDuration,
+        duration: CAMERA_OPTIONS.ROTATION_DURATION,
         ease: "power3.out",
         onUpdate: () => {
           camera.position.x = data.z * Math.sin(data.theta);
@@ -40,8 +36,8 @@ export default function CameraSpin() {
     ).to(
       data,
       {
-        z: endZ,
-        duration: zoomDuration,
+        z: CAMERA_OPTIONS.END_Z,
+        duration: CAMERA_OPTIONS.ZOOM_DURATION,
         delay: 1.5,
         ease: "back.out(1.1)",
         onUpdate: () => {

@@ -10,7 +10,7 @@ export default function TextLabel({
 }: TextPlacement) {
   return (
     <Text
-      text={letter.toUpperCase()}
+      text={letter}
       font="/fonts/Galmuri11-Condensed.ttf"
       position={position}
       rotation={rotation}

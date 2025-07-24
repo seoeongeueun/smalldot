@@ -8,6 +8,7 @@ import { useToastStore } from "@/stores/toastStore";
 import { DayPicker } from "react-day-picker";
 import { isSameDay } from "date-fns";
 import { getKeywordsFromText } from "@/lib/geminiAnalyzer";
+import { SCRAMBLE_OPTIONS } from "@/utils/constants";
 
 type Mode = "edit" | "delete" | "default";
 
@@ -27,9 +28,6 @@ export default function Note() {
   const [contentLength, setContentLength] = useState<number>(
     note?.content.length ?? 0
   );
-
-  const TEXT_DIFF_RATIO = 0.2; // 글자 수가 바뀐 정도 기준 (현재 20%)
-  const TEXT_TIME_DIFF = 30_000; // 마지막으로 업데이트 된 시각과의 최소 차이 (현재 30초)
 
   useEffect(() => {
     const noteBox = noteRef.current;
@@ -73,9 +71,10 @@ export default function Note() {
     //최소 40초 이상 전에 마지막으로 수정되었고 글자 수가 기준 이상 변한 경우에만 제미나이로 타이틀 갱신
     let shouldUpdateTitle =
       note?.updated_at &&
-      Date.now() - new Date(note.updated_at).getTime() >= TEXT_TIME_DIFF &&
+      Date.now() - new Date(note.updated_at).getTime() >=
+        SCRAMBLE_OPTIONS.TEXT_TIME_DIFF &&
       Math.abs(contentLength - note.content.length) / contentLength >=
-        TEXT_DIFF_RATIO;
+        SCRAMBLE_OPTIONS.TEXT_DIFF_RATIO;
 
     console.log(
       shouldUpdateTitle,
