@@ -1,5 +1,4 @@
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
 import GlobeMesh from "./components/GlobeMesh";
 import StarField from "./components/StarField";
 import Menu from "./components/Menu";
@@ -14,6 +13,10 @@ import gsap from "gsap";
 import { useNoteStore } from "./stores/noteStore";
 import SideBar from "./components/SideBar";
 import CameraSpin from "./components/CameraSpin";
+import LoginModal from "./components/LoginModal";
+import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
+
+gsap.registerPlugin(ScrambleTextPlugin);
 
 export default function App() {
   const menuRef = useRef<HTMLDivElement>(null);
@@ -89,6 +92,7 @@ export default function App() {
         <StarField />
       </Canvas>
       <SideBar />
+      {/* <LoginModal /> */}
       {note && <Note />}
       {click?.feature && (
         <section

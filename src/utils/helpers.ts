@@ -71,3 +71,30 @@ export function maskEmail(email: string): string {
 
   return `${masked}@${domain}`;
 }
+
+/* supabase 에러 메세지로 에러 타입 판단 */
+export function getErrorStatusFromMessage(message: string) {
+  const msg = message.toLowerCase();
+
+  switch (true) {
+    case msg.includes("registered"):
+    case msg.includes("exists"):
+      return "EMAIL_EXISTS";
+
+    case msg.includes("password") && msg.includes("characters"):
+      return "PASSWORD_LENGTH";
+
+    case msg.includes("confirmed"):
+    case msg.includes("verify"):
+      return "EMAIL_VERIFY";
+
+    case msg.includes("invalid"):
+      return "INVALID_INPUT";
+
+    case msg.includes("missing"):
+      return "MISSING_INPUT";
+
+    default:
+      return "UNEXPECTED_ERROR";
+  }
+}

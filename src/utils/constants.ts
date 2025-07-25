@@ -17,3 +17,18 @@ export const CAMERA_OPTIONS = {
   ROTATION_DURATION: 1.5, // 회전 지속 시간
   ZOOM_DURATION: 1.5, // 줌인 시간
 };
+
+/* 로그인/회원가입 에러 코드 */
+export const AUTH_ERROR_MESSAGES = {
+  EMAIL_EXISTS: "Username is taken",
+  PASSWORD_LENGTH: "Password too short",
+  EMAIL_VERIFY: "Email not verified yet",
+  INVALID_INPUT: "Invalid credentials",
+  UNEXPECTED_ERROR: "Unexpected error has occurred",
+  SIGNUP_SUCCESS: "VERIFICATION EMAIL SENT",
+  LOGIN_SUCCESS: "ACCESS GRANTED",
+  MISSING_INPUT: "MISSING INPUT",
+  DEFAULT: null,
+} as const;
+
+export type ERROR_STATUS = keyof typeof AUTH_ERROR_MESSAGES;

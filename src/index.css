@@ -211,7 +211,11 @@ h3 > span {
 
 /* 버튼 설정 */
 button {
-  @apply flex items-center justify-center transition-colors duration-200 hover:cursor-pointer hover:text-theme;
+  @apply flex items-center justify-center transition-colors duration-200 hover:cursor-pointer hover:text-theme rounded-xs gap-2 text-center;
+}
+
+button:disabled {
+  @apply text-gray-400 cursor-auto;
 }
 
 /* 스크램블 중인 글자 스타일 */
@@ -223,4 +227,9 @@ button {
 
 .scramble-letter.revealed {
   opacity: 1;
+}
+
+/* 인풋 스타일 */
+input {
+  @apply border-white focus:outline-none focus:border-theme;
 }
