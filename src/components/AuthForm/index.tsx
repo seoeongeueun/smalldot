@@ -1,18 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { signIn, signUp, checkEmailVerified } from "@/lib/auth";
 import { AUTH_ERROR_MESSAGES, ERROR_STATUS } from "@/utils/constants";
 import { getErrorStatusFromMessage } from "@/utils/helpers";
+import { useModalStore } from "@/stores/modalStore";
 import clsx from "clsx";
 
 export default function AuthForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSignup, setIsSignup] = useState<boolean>(false);
   const [status, setStatus] = useState<ERROR_STATUS>("DEFAULT");
+  const setIsOpen = useModalStore((s) => s.setIsOpen);
+  const formRef = useRef<HTMLFormElement>(null);
 
   //모드가 바뀌면 에러 메세지도 초기화
   useEffect(() => {
     setStatus("DEFAULT");
+    formRef.current?.reset();
   }, [isSignup]);
+
+  useEffect(() => {
+    const actions: Record<string, () => void> = {
+      SIGNUP_SUCCESS: () => setIsSignup(false),
+      LOGIN_SUCCESS: () => setIsOpen(false),
+    };
+
+    const action = actions[status];
+    if (!action) return;
+
+    const timer = setTimeout(action, 1500);
+
+    return () => clearTimeout(timer);
+  }, [status]);
 
   const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -43,7 +61,11 @@ export default function AuthForm() {
   };
 
   return (
-    <form onSubmit={handleAuth} className="relative flex flex-col gap-3 w-full">
+    <form
+      ref={formRef}
+      onSubmit={handleAuth}
+      className="relative flex flex-col gap-3 w-full"
+    >
       <fieldset className="flex flex-col gap-3">
         <h3 className="tracking-wide">
           {isSignup ? "JOIN THE MISSION" : "ENTER CREDENTIALS"}

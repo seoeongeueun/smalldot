@@ -3,9 +3,11 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import gsap from "gsap";
 import { CAMERA_OPTIONS } from "@/utils/constants";
+import { useModalStore } from "@/stores/modalStore";
 
 export default function CameraSpin() {
   const { camera } = useThree();
+  const setIsOpen = useModalStore((s) => s.setIsOpen);
   const controlsRef = useRef<any>(null);
 
   useEffect(() => {
@@ -47,6 +49,7 @@ export default function CameraSpin() {
         },
         onComplete: () => {
           sessionStorage.setItem("landed", "true");
+          setIsOpen(true);
         },
       },
       0

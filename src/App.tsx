@@ -15,6 +15,7 @@ import SideBar from "./components/SideBar";
 import CameraSpin from "./components/CameraSpin";
 import LoginModal from "./components/LoginModal";
 import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
+import { useModalStore } from "@/stores/modalStore";
 
 gsap.registerPlugin(ScrambleTextPlugin);
 
@@ -23,6 +24,7 @@ export default function App() {
   const setGeojson = useGeoStore((s) => s.setGeojson);
   const click = useClickStore((s) => s.click);
   const { note, reset } = useNoteStore();
+  const isOpen = useModalStore((s) => s.isOpen);
 
   useEffect(() => {
     fetch("/world.geo.json")
@@ -92,7 +94,7 @@ export default function App() {
         <StarField />
       </Canvas>
       <SideBar />
-      {/* <LoginModal /> */}
+      {isOpen && <LoginModal />}
       {note && <Note />}
       {click?.feature && (
         <section
