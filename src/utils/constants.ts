@@ -22,12 +22,14 @@ export const CAMERA_OPTIONS = {
 export const AUTH_ERROR_MESSAGES = {
   EMAIL_EXISTS: "Username is taken",
   PASSWORD_LENGTH: "Password too short",
+  USERNAME_LENGTH: "USERNAME TOO SHORT",
   EMAIL_VERIFY: "Email not verified yet",
   INVALID_INPUT: "Invalid credentials",
   UNEXPECTED_ERROR: "Unexpected error has occurred",
   SIGNUP_SUCCESS: "VERIFICATION EMAIL SENT",
   LOGIN_SUCCESS: "ACCESS GRANTED",
   MISSING_INPUT: "MISSING INPUT",
+  PASSWORD_MISMATCH: "PASSWORDS DO NOT MATCH",
   DEFAULT: null,
 } as const;
 

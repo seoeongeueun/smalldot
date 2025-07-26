@@ -2,9 +2,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import type { Note } from "@/types/database";
 import { fetchNotesByCountryCodeFn, fetchNoteByIdFn } from "@/api/noteFetchers";
+import { useSession } from "@/hooks/useSession";
 
 export function useNotes() {
   const queryClient = useQueryClient();
+  const { data: session } = useSession();
 
   //id로 단일 노트 반환
   const fetchNote = (id: string) =>
@@ -30,7 +32,15 @@ export function useNotes() {
       country_code: string;
       date: string;
     }) => {
-      const { data, error } = await supabase.from("notes").insert([note]);
+      const user = session?.user;
+      if (!user) throw new Error("User not logged in");
+
+      const { data, error } = await supabase.from("notes").insert([
+        {
+          ...note,
+          user_id: user.id,
+        },
+      ]);
       if (error) throw error;
       return data;
     },

@@ -57,8 +57,10 @@ export default function TextBox() {
             setInput("");
             setToast("Saved");
           },
-          onError: () => {
-            setToast("Save failed", true);
+          onError: (error) => {
+            if (error.message.includes("logged"))
+              setToast("Log in expired", true);
+            else setToast("Save failed", true);
           },
         }
       );
