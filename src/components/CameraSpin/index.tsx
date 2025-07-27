@@ -11,10 +11,6 @@ export default function CameraSpin() {
   const controlsRef = useRef<any>(null);
 
   useEffect(() => {
-    const hasLanded = sessionStorage.getItem("landed");
-
-    if (hasLanded === "true") return;
-
     // 초기 카메라 설정
     camera.position.set(0, 0, CAMERA_OPTIONS.START_Z);
     camera.lookAt(0, 0, 0);
@@ -48,7 +44,6 @@ export default function CameraSpin() {
           camera.lookAt(0, 0, 0);
         },
         onComplete: () => {
-          sessionStorage.setItem("landed", "true");
           setIsOpen(true);
         },
       },

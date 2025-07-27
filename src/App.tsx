@@ -16,6 +16,9 @@ import CameraSpin from "./components/CameraSpin";
 import LoginModal from "./components/LoginModal";
 import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import { useModalStore } from "@/stores/modalStore";
+import { supabase } from "@/lib/supabase";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSession } from "@/hooks/useSession";
 
 gsap.registerPlugin(ScrambleTextPlugin);
 
@@ -25,12 +28,25 @@ export default function App() {
   const click = useClickStore((s) => s.click);
   const { note, reset } = useNoteStore();
   const isOpen = useModalStore((s) => s.isOpen);
+  const queryClient = useQueryClient();
+  const { data: session } = useSession();
 
   useEffect(() => {
     fetch("/world.geo.json")
       .then((res) => res.json())
       .then(setGeojson);
   }, []);
+
+  // 세션 상태 변경되면 refetch
+  useEffect(() => {
+    const { data: listener } = supabase.auth.onAuthStateChange(() => {
+      queryClient.invalidateQueries({ queryKey: ["session"] });
+    });
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, [queryClient]);
 
   useEffect(() => {
     const section = menuRef.current;
@@ -89,7 +105,7 @@ export default function App() {
       >
         <ambientLight intensity={0.4} />
         <directionalLight position={[1, 1, 10]} intensity={0.3} castShadow />
-        <CameraSpin />
+        {!session && <CameraSpin />}
         <GlobeMesh />
         <StarField />
       </Canvas>
