@@ -134,7 +134,7 @@ export default function App() {
             <section
               ref={menuRef}
               aria-label="Menu"
-              className="fixed pointer-events-none bottom-0 justify-self-center w-[94%] sm:w-[92%] lg:w-[40rem] flex flex-col gap-4 justify-start py-2 sm:py-8 text-white"
+              className="fixed pointer-events-none bottom-0 left-1/2 -translate-x-1/2 w-[94%] sm:w-[92%] lg:w-[40rem] flex flex-col gap-4 justify-start self-center py-2 sm:py-8 text-white"
             >
               <TextBox />
               <div className="flex flex-col sm:flex-row gap-2 min-h-32">

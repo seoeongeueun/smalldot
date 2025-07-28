@@ -65,8 +65,11 @@ export default function NotesBox() {
             </button>
           ))
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center gap-2">
-            <i aria-hidden="true" className="hn hn-folder text-[1.6rem]"></i>
+          <div className="w-full h-12 sm:h-full flex flex-col items-center justify-center gap-1 sm:gap-2">
+            <i
+              aria-hidden="true"
+              className="hn hn-folder text-[1.2rem] sm:text-[1.6rem]"
+            ></i>
             <span className="!text-xxxs tracking-wider">NO RECORD</span>
           </div>
         )
