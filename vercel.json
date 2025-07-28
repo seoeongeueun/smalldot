@@ -1,3 +1,15 @@
 {
-  "rewrites": [{ "source": "/*", "destination": "/" }]
+  "version": 2,
+  "routes": [
+    {
+      "src": "/(.*\\.(js|css|svg|png|jpg|jpeg|gif|webp|ico|woff2?|ttf|otf|eot|json|txt|xml|mp4|webm|wasm))",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ]
 }
