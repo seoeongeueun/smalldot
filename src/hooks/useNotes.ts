@@ -48,6 +48,7 @@ export function useNotes() {
       queryClient.invalidateQueries({
         queryKey: ["notes", variables.country_code],
       });
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
   });
 
@@ -101,6 +102,7 @@ export function useNotes() {
     },
     onSuccess: (country_code) => {
       queryClient.invalidateQueries({ queryKey: ["notes", country_code] });
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
   });
 

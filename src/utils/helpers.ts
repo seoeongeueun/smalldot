@@ -54,7 +54,7 @@ export function cartesianToLatLon(
   return { lat, lon };
 }
 
-//이메일의 유저네임 중간 30% 영역을 마스킹
+//이메일의 유저네임 중간 40% 영역을 마스킹
 export function maskEmail(email: string): string {
   const [local, domain] = email.split("@");
   if (!local || !domain) return email;
@@ -62,7 +62,7 @@ export function maskEmail(email: string): string {
   const len = local.length;
   if (len < 2) return email; // 너무 짧으면 마스킹 생략
 
-  const half = Math.floor(len * 0.3);
+  const half = Math.floor(len * 0.4);
   const start = Math.floor((len - half) / 2);
   const end = start + half;
 

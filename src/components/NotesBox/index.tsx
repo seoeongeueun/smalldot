@@ -42,7 +42,7 @@ export default function NotesBox() {
     <section
       ref={containerRef}
       className={clsx(
-        "border border-px backdrop-blur-xs sm:p-2 rounded-xs border-theme bg-black/40 w-full sm:w-[8rem] md:w-[12rem] h-12 sm:min-h-28 sm:h-auto sm:max-h-[calc(5*1.6rem)] sm:gap-y-12 overflow-x-scroll overflow-y-hidden sm:overflow-x-hidden sm:overflow-y-scroll grid-flow-col auto-cols-[2.4rem] sm:grid-flow-row sm:grid-cols-2 md:grid-cols-3 pointer-events-auto",
+        "border border-px backdrop-blur-xs sm:p-2 rounded-xs border-theme bg-black/40 w-full sm:w-[8rem] md:w-[12rem] h-12 sm:min-h-28 sm:h-auto sm:max-h-[calc(5*1.6rem)] sm:gap-y-12 md:gap-y-0 overflow-x-scroll overflow-y-hidden sm:overflow-x-hidden sm:overflow-y-scroll grid-flow-col auto-cols-[2.4rem] sm:grid-flow-row sm:grid-cols-2 md:grid-cols-3 pointer-events-auto",
         !notes || notes?.length > 0 ? "grid" : "flex"
       )}
     >

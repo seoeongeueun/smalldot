@@ -6,7 +6,6 @@ import UserModal from "../UserModal";
 
 export default function SideBar() {
   const [openSideBar, setOpenSideBar] = useState<boolean>(false);
-  const [isLogin, setIsLogin] = useState<boolean>(false);
   const sideBarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,7 +34,7 @@ export default function SideBar() {
   }, [openSideBar]);
 
   return (
-    <div className="fixed top-2 right-2 h-fit p-2 z-40 w-70">
+    <div className="fixed top-2 right-2 h-fit p-2 z-40 w-70 pointer-events-none">
       <button
         type="button"
         onClick={() => setOpenSideBar((p) => !p)}
@@ -73,7 +72,7 @@ export default function SideBar() {
       </button>
       <aside
         ref={sideBarRef}
-        className="bg-black/80 overflow-hidden backdrop-blur-xs border border-px border-theme h-fit w-full absolute inset-0 rounded-xs p-4 text-white flex flex-col"
+        className="bg-black/80 overflow-hidden backdrop-blur-xs border border-px border-theme h-fit w-full absolute inset-0 rounded-xs p-4 text-white flex flex-col opacity-0"
         aria-label="Sidebar user info"
       >
         <UserModal isLogin={true} />

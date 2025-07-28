@@ -16,6 +16,7 @@ type ClickStore = {
   } | null;
   countryCode: string | null;
   setClick: (lat: number, lon: number, feature: ClickFeature) => void;
+  reset: () => void;
 };
 
 export const useClickStore = create<ClickStore>((set) => ({
@@ -26,4 +27,5 @@ export const useClickStore = create<ClickStore>((set) => ({
       click: { lat, lon, feature },
       countryCode: feature?.properties?.iso_a3 || null,
     }),
+  reset: () => set({ click: null, countryCode: null }),
 }));

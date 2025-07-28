@@ -80,3 +80,20 @@ export async function checkEmailVerified(): Promise<boolean> {
 
   return !!data.user?.email_confirmed_at;
 }
+
+export async function getUserProfile() {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) return { data: null, error: userError };
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  return { data: profile, error: profileError };
+}

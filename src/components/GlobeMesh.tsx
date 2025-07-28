@@ -21,13 +21,13 @@ import TextLabel from "./TextLabel";
 import type { TextPlacement, GridCell } from "@/types/globe";
 import { Suspense } from "react";
 import { TEXT_LABEL_OPTIONS } from "@/utils/constants";
+import GridCells from "./GridCells";
 
 export default function GlobeMesh() {
   const geojson = useGeoStore((s) => s.geojson);
   const setClick = useClickStore((s) => s.setClick);
   const countryCode = useClickStore((s) => s.countryCode);
 
-  //TODO: 나중에는 유저별 전체 노트를 가져오는 것으로 수정 필요
   const { fetchNotesByCountryCode } = useNotes();
   const { data: notes, isLoading } = fetchNotesByCountryCode(countryCode);
 
@@ -106,6 +106,12 @@ export default function GlobeMesh() {
   function createPolygonTextMeshes() {
     if (!selectedPolygon) return;
 
+    //노트가 있다가 삭제된 경우도 있기 때문에 명시적으로 비워줌
+    if (!notes?.length) {
+      setTextPlacements([]);
+      return;
+    }
+
     const coords = selectedPolygon.geometry.coordinates[0] as [
       number,
       number
@@ -171,8 +177,6 @@ export default function GlobeMesh() {
     //   }
     // }
     // setGridCells(newGridCells);
-
-    if (!notes?.length) return;
 
     const titles = notes
       .map((note) => note.title.trim()) // 앞뒤 공백 포함 \n 제거
