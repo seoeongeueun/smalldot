@@ -7,9 +7,13 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
 
 //주어진 텍스트를 제미나이 분석 후 핵심 요약 단어 추출
 export async function getKeywordsFromText(text: string) {
-  if (!text || text.trim() === "") {
+  if (!text || text?.trim() === "") {
     return "";
   }
+
+  const splitText = text.trim().split(" ");
+  //한 단어인 경우 검사 필요 없이 그대로 반환
+  if (splitText.length < 2) return splitText[0];
 
   const prompt = `
     Analyze the following text and provide a **single keyword** that best represents its **core theme or most important content**. **The keyword must be in the same language as the original text.** You need to identify the language of the original text and return the keyword(s) in the **identical language**.
