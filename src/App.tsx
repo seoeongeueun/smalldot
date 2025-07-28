@@ -50,7 +50,7 @@ export default function App() {
 
   useEffect(() => {
     const section = menuRef.current;
-    if (!section) return;
+    if (!section || !session || !click?.feature) return;
 
     //섹션의 가장 가까운 자식에 애니메이션 부여
     const items = section.querySelectorAll(":scope > *");
@@ -65,7 +65,7 @@ export default function App() {
       },
       ease: "back.out(1.7)",
     });
-  }, [click?.feature]);
+  }, [click?.feature, session]);
 
   useEffect(() => {
     if (!note) return;
@@ -105,25 +105,30 @@ export default function App() {
       >
         <ambientLight intensity={0.4} />
         <directionalLight position={[1, 1, 10]} intensity={0.3} castShadow />
-        {!session && <CameraSpin />}
+        <CameraSpin />
         <GlobeMesh />
         <StarField />
       </Canvas>
-      <SideBar />
-      {isOpen && <LoginModal />}
-      {note && <Note />}
-      {click?.feature && (
-        <section
-          ref={menuRef}
-          aria-label="Menu"
-          className="fixed pointer-events-none bottom-0 justify-self-center w-[94%] sm:w-[92%] lg:w-[40rem] flex flex-col gap-4 justify-start py-2 sm:py-8 text-white"
-        >
-          <TextBox />
-          <div className="flex flex-col sm:flex-row gap-2 min-h-32">
-            <Menu />
-            <NotesBox />
-          </div>
-        </section>
+      {session ? (
+        <>
+          <SideBar />
+          {note && <Note />}
+          {click?.feature && (
+            <section
+              ref={menuRef}
+              aria-label="Menu"
+              className="fixed pointer-events-none bottom-0 justify-self-center w-[94%] sm:w-[92%] lg:w-[40rem] flex flex-col gap-4 justify-start py-2 sm:py-8 text-white"
+            >
+              <TextBox />
+              <div className="flex flex-col sm:flex-row gap-2 min-h-32">
+                <Menu />
+                <NotesBox />
+              </div>
+            </section>
+          )}
+        </>
+      ) : (
+        isOpen && <LoginModal />
       )}
     </>
   );
