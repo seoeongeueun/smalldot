@@ -54,6 +54,10 @@ export default function App() {
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange(() => {
       queryClient.invalidateQueries({ queryKey: ["session"] });
+
+      if (!session) {
+        queryClient.removeQueries({ queryKey: ["profile"] });
+      }
     });
 
     return () => {
