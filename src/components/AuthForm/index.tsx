@@ -5,6 +5,7 @@ import { getErrorStatusFromMessage } from "@/utils/helpers";
 import { useModalStore } from "@/stores/modalStore";
 import clsx from "clsx";
 import { useForm } from "react-hook-form";
+import { AuthResponse } from "@supabase/supabase-js";
 
 type FormFields = {
   email: string;
@@ -58,9 +59,11 @@ export default function AuthForm() {
     }
 
     try {
-      const { data: result, error } = isSignup
-        ? await signUp(data.email, data.password, data.username!)
-        : await signIn(data.email, data.password);
+      const { data: result, error } = (
+        isSignup
+          ? await signUp(data.email, data.password, data.username!)
+          : await signIn(data.email, data.password)
+      ) as AuthResponse;
 
       if (error) {
         console.log(`${isSignup ? "Signup" : "Login"} error:`, error);

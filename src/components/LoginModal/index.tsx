@@ -32,7 +32,6 @@ export default function LoginModal() {
     if (!modal) return;
 
     const height = modal.clientHeight + 5;
-    console.log("measured height:", height);
 
     gsap.set(modal, { opacity: 0, height: 0 });
     gsap.to(modal, {

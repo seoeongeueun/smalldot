@@ -88,7 +88,7 @@ export default function TextBox() {
             toast.isError ? "text-error" : "text-theme"
           )}
         >
-          {toast.message}
+          {toast.message.toUpperCase()}
         </span>
       )}
       <form

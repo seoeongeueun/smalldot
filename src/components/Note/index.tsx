@@ -70,17 +70,16 @@ export default function Note() {
 
     //최소 40초 이상 전에 마지막으로 수정되었고 글자 수가 기준 이상 변한 경우에만 제미나이로 타이틀 갱신
     let shouldUpdateTitle =
-      note?.updated_at &&
-      Date.now() - new Date(note.updated_at).getTime() >=
+      Date.now() - new Date(note.updated_at || note.created_at).getTime() >=
         SCRAMBLE_OPTIONS.TEXT_TIME_DIFF &&
       Math.abs(contentLength - note.content.length) / contentLength >=
         SCRAMBLE_OPTIONS.TEXT_DIFF_RATIO;
 
-    console.log(
-      shouldUpdateTitle,
-      Math.abs(contentLength - note.content.length) / contentLength,
-      Date.now() - new Date(note.updated_at!).getTime()
-    );
+    // console.log(
+    //   shouldUpdateTitle,
+    //   Math.abs(contentLength - note.content.length) / contentLength,
+    //   Date.now() - new Date(note.updated_at!).getTime()
+    // );
 
     let newTitle = note.title;
 

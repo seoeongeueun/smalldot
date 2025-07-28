@@ -15,6 +15,7 @@ interface UserModalProps {
 type ProfileType = {
   username: string;
   total_notes: number;
+  recent_country: string;
   email: string;
 };
 
@@ -32,6 +33,7 @@ export default function UserModal({ isLogin, setIsPreview }: UserModalProps) {
       setProfile({
         username: userProfile.username,
         total_notes: userProfile.total_notes,
+        recent_country: userProfile.recent_country || "NO RECORD",
         email: session?.user.email ?? "",
       });
     }
@@ -216,8 +218,11 @@ export default function UserModal({ isLogin, setIsPreview }: UserModalProps) {
           </div>
           <div className="flex flex-row gap-2 justify-start items-center">
             <i className="hn hn-globe-americas text-[0.8rem] mb-px"></i>
-            <dt className="font-medium">Most Visited Country:</dt>
-            <dd className="ml-auto scramble-text" data-text="KOR"></dd>
+            <dt className="font-medium">Recent Country:</dt>
+            <dd
+              className="ml-auto scramble-text"
+              data-text={profile?.recent_country}
+            ></dd>
           </div>
         </dl>
         <button
