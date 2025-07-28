@@ -37,7 +37,7 @@ export default function UserModal({ isLogin, setIsPreview }: UserModalProps) {
         email: session?.user.email ?? "",
       });
     }
-  }, [userProfile, session?.user.id]);
+  }, [userProfile, session?.user]);
 
   useEffect(() => {
     const timeouts: number[] = [];

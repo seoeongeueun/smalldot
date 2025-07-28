@@ -37,6 +37,19 @@ export default function App() {
       .then(setGeojson);
   }, []);
 
+  useEffect(() => {
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    const searchParams = new URLSearchParams(window.location.search);
+
+    const error =
+      hashParams.get("error_description") ||
+      searchParams.get("error_description");
+
+    if (error?.includes("invalid")) {
+      alert("Email has expired or is no longer valid. Please sign up again.");
+    }
+  }, []);
+
   // 세션 상태 변경되면 refetch
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange(() => {
