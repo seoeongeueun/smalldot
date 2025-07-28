@@ -6,7 +6,7 @@ import clsx from "clsx";
 
 export default function LoginModal() {
   const [isPreview, setIsPreview] = useState<boolean>(true);
-  const modalRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDialogElement>(null);
 
   //   useEffect(() => {
   //     const modal = modalRef.current;
