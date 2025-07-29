@@ -177,10 +177,10 @@ export default function UserModal({ isLogin, setIsPreview }: UserModalProps) {
         console.error("Sign out error:", error.message);
       } else {
         console.log("Signed out");
-
+        await new Promise((res) => setTimeout(res, 100)); // 토큰 제거 대기
         //로그아웃 후 스토어 값 초기화
-        clickReset();
         noteReset();
+        clickReset();
       }
     } catch (err) {
       console.error("Unexpected error:", err);

@@ -52,19 +52,19 @@ export default function App() {
 
   // 세션 상태 변경되면 refetch
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        console.log("No session yet, waiting for restore...");
-      }
-    });
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        queryClient.invalidateQueries({ queryKey: ["session"] });
 
-    const { data: listener } = supabase.auth.onAuthStateChange(() => {
-      queryClient.invalidateQueries({ queryKey: ["session"] });
-
-      if (!session) {
-        queryClient.removeQueries({ queryKey: ["profile"] });
+        console.log(session);
+        if (!session) {
+          // 세션이 사라졌을 때 캐시 정리
+          queryClient.removeQueries({ queryKey: ["profile"] });
+          queryClient.invalidateQueries({ queryKey: ["notes"] });
+          queryClient.clear();
+        }
       }
-    });
+    );
 
     return () => {
       listener.subscription.unsubscribe();
