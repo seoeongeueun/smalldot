@@ -52,6 +52,12 @@ export default function App() {
 
   // 세션 상태 변경되면 refetch
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        console.log("No session yet, waiting for restore...");
+      }
+    });
+
     const { data: listener } = supabase.auth.onAuthStateChange(() => {
       queryClient.invalidateQueries({ queryKey: ["session"] });
 
