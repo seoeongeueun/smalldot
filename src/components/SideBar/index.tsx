@@ -75,7 +75,7 @@ export default function SideBar() {
         className="bg-black/80 overflow-hidden backdrop-blur-xs border border-px border-theme h-fit w-full absolute inset-0 rounded-xs p-4 text-white flex flex-col opacity-0"
         aria-label="Sidebar user info"
       >
-        <UserModal isLogin={true} />
+        <UserModal isLogin={true} isVisible={openSideBar} />
       </aside>
     </div>
   );

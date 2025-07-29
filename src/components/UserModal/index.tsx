@@ -9,6 +9,7 @@ import { useNoteStore } from "@/stores/noteStore";
 
 interface UserModalProps {
   isLogin: boolean;
+  isVisible?: boolean;
   setIsPreview?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -19,7 +20,11 @@ type ProfileType = {
   email: string;
 };
 
-export default function UserModal({ isLogin, setIsPreview }: UserModalProps) {
+export default function UserModal({
+  isLogin,
+  isVisible = true,
+  setIsPreview,
+}: UserModalProps) {
   const numberRef = useRef<HTMLElement>(null);
   const [profile, setProfile] = useState<ProfileType | null>(null);
   const clickReset = useClickStore((s) => s.reset);
@@ -40,15 +45,17 @@ export default function UserModal({ isLogin, setIsPreview }: UserModalProps) {
   }, [userProfile, session?.user]);
 
   useEffect(() => {
+    if (!isVisible) return;
+
     const timeouts: number[] = [];
     const intervals: number[] = [];
 
     const CHARS: string =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    const DELAY_MS: number = isLogin ? 8000 : 4000;
+    const DELAY_MS: number = isLogin ? 6000 : 4000;
     const SCRAMBLE_DURATION: number = isLogin ? 800 : 1000;
-    const START_DELAY: [number, number] = isLogin ? [1000, 1500] : [200, 500];
-    const LOOP_OPTION: boolean = true;
+    const START_DELAY: [number, number] = isLogin ? [300, 700] : [200, 500];
+    const LOOP_OPTION: boolean = true; //비로그인 상태만 루프
 
     const normalize = (t: string) =>
       t
@@ -164,7 +171,7 @@ export default function UserModal({ isLogin, setIsPreview }: UserModalProps) {
       timeouts.forEach(clearTimeout);
       intervals.forEach(clearInterval);
     };
-  }, [profile]);
+  }, [profile, isVisible]);
 
   const handleSwitchMode = () => {
     if (setIsPreview) setIsPreview(false);
