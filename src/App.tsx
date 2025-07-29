@@ -56,7 +56,6 @@ export default function App() {
       (event, session) => {
         queryClient.invalidateQueries({ queryKey: ["session"] });
 
-        console.log(session);
         if (!session) {
           // 세션이 사라졌을 때 캐시 정리
           queryClient.removeQueries({ queryKey: ["profile"] });

@@ -1,9 +1,9 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import * as THREE from "three";
 import * as turf from "@turf/turf";
 import GlobeLines from "./GlobeLines";
-import { ThreeEvent } from "@react-three/fiber";
+import { ThreeEvent, useThree } from "@react-three/fiber";
 import type {
   Feature,
   Polygon,
@@ -20,10 +20,17 @@ import { useNotes } from "@/hooks/useNotes";
 import TextLabel from "./TextLabel";
 import type { TextPlacement, GridCell } from "@/types/globe";
 import { Suspense } from "react";
-import { TEXT_LABEL_OPTIONS } from "@/utils/constants";
+import { TEXT_LABEL_OPTIONS, CAMERA_OPTIONS } from "@/utils/constants";
+import gsap from "gsap";
 import GridCells from "./GridCells";
+import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
+import { latLonToCartesian } from "@/utils/helpers";
 
 export default function GlobeMesh() {
+  const { camera, controls } = useThree() as {
+    camera: THREE.Camera;
+    controls: OrbitControlsImpl;
+  };
   const geojson = useGeoStore((s) => s.geojson);
   const setClick = useClickStore((s) => s.setClick);
   const countryCode = useClickStore((s) => s.countryCode);
@@ -35,13 +42,78 @@ export default function GlobeMesh() {
   const [gridCells, setGridCells] = useState<GridCell[]>([]);
   const [selectedPolygon, setSelectedPolygon] =
     useState<Feature<Polygon> | null>(null);
+  const downPos = useRef<{ x: number; y: number } | null>(null);
+  const moved = useRef(false);
+  const clicked = useClickStore((s) => s.click);
 
   // notes가 준비되면 자동으로 텍스트 메쉬 생성
   useEffect(() => {
     if (selectedPolygon) createPolygonTextMeshes();
   }, [selectedPolygon, notes]);
 
+  // 나라에 텍스트가 나타나는 시점에 줌인과 자동 회전 트리거
+  useEffect(() => {
+    if (textPlacements.length === 0 || !clicked) return;
+
+    // 클릭한 지점을 바라보는 방향 벡터
+    const { lat, lon } = clicked;
+    const targetDir = latLonToCartesian(lat, lon).clone().normalize();
+
+    // 현재 카메라 거리
+    const currentDistance = camera.position.length();
+
+    // 목표 거리 (줌 인 정도도 고려)
+    const targetDistance =
+      currentDistance > CAMERA_OPTIONS.CLICK_ZOOM
+        ? CAMERA_OPTIONS.CLICK_ZOOM
+        : currentDistance;
+
+    // 클릭 지점 방향으로 targetDistance만큼 떨어진 지점으로 카메라 이동
+    const targetPos = targetDir.multiplyScalar(targetDistance);
+
+    gsap.to(camera.position, {
+      x: targetPos.x,
+      y: targetPos.y,
+      z: targetPos.z,
+      duration: 1.3,
+      ease: "power2.out",
+      onUpdate: () => {
+        camera.lookAt(0, 0, 0);
+        controls?.update?.();
+      },
+    });
+  }, [textPlacements]);
+
+  // 포인터 이동 거리로 드래그인지 클릭인지 판단
+  function handlePointerMove(e: ThreeEvent<PointerEvent>) {
+    if (!downPos.current) return;
+    const dx = Math.abs(e.clientX - downPos.current.x);
+    const dy = Math.abs(e.clientY - downPos.current.y);
+    if (dx > 2 || dy > 2) {
+      // 최소 거리 2px
+      moved.current = true;
+    }
+  }
+
   function handlePointerDown(event: ThreeEvent<PointerEvent>) {
+    event.stopPropagation();
+
+    downPos.current = { x: event.clientX, y: event.clientY };
+    moved.current = false;
+  }
+
+  function handlePointerUp(e: ThreeEvent<PointerEvent>) {
+    e.stopPropagation();
+
+    if (!moved.current) {
+      // 드래그가 아니라 실제 클릭인지 확인
+      handleRealClick(e);
+    }
+    downPos.current = null;
+  }
+
+  // 드래그시 발생되는 클릭이 아니라 진짜 단일 클릭인 경우에만 실행
+  function handleRealClick(event: ThreeEvent<PointerEvent>) {
     event.stopPropagation();
 
     if (!geojson) return;
@@ -314,7 +386,12 @@ export default function GlobeMesh() {
 
   return (
     <>
-      <mesh receiveShadow onPointerDown={handlePointerDown}>
+      <mesh
+        receiveShadow
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+      >
         <sphereGeometry args={[1, 64, 64]} />
         <meshStandardMaterial
           color="steelblue"

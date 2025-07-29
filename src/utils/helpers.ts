@@ -1,3 +1,5 @@
+import * as THREE from "three";
+
 /* 날짜 변환 함수 */
 export function formatTimestamp(raw: string | undefined) {
   if (!raw) return;
@@ -52,6 +54,24 @@ export function cartesianToLatLon(
   lon = -lon - 180;
   lon = ((lon + 540) % 360) - 180;
   return { lat, lon };
+}
+/**
+ * lat/lon → Cartesian 좌표 변환 (cartesianToLatLon 역함수)
+ * @param lat 위도 (deg)
+ * @param lon 경도 (deg)
+ * @param radius 기본 1
+ */
+export function latLonToCartesian(lat: number, lon: number, radius = 1) {
+  // degree → radian 변환
+  const phi = (90 - lat) * (Math.PI / 180);
+  const theta = -(lon + 180) * (Math.PI / 180);
+  // ↳ cartesianToLatLon에서 lon = -atan2(z,x)-180 했으므로 역변환도 반대로 처리
+
+  const x = radius * Math.sin(phi) * Math.cos(theta);
+  const z = radius * Math.sin(phi) * Math.sin(theta);
+  const y = radius * Math.cos(phi);
+
+  return new THREE.Vector3(x, y, z);
 }
 
 //이메일의 유저네임 중간 40% 영역을 마스킹

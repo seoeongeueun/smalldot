@@ -16,6 +16,7 @@ export const CAMERA_OPTIONS = {
   END_Z: 2.5,
   ROTATION_DURATION: 1.5, // 회전 지속 시간
   ZOOM_DURATION: 1.5, // 줌인 시간
+  CLICK_ZOOM: 1.8, //나라 클릭시 줌인 되는 정도
 };
 
 /* 로그인/회원가입 에러 코드 */
