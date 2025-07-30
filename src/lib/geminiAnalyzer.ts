@@ -37,8 +37,18 @@ export async function getKeywordsFromText(text: string) {
   `;
 
   try {
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text().trim().split(" ")[0]; //혹시 하나 이상의 단어가 반환될 경우를 대비해 무조건 첫 단어만 반환
+    const timeoutPromise = new Promise<string>((resolve, reject) => {
+      setTimeout(() => {
+        reject(
+          new Error("Timeout: Gemini API call took longer than 20 seconds.")
+        );
+      }, 20000); // 20초 이상 걸리면 에러로 처리
+    });
+
+    const geminiCallPromise = model.generateContent(prompt);
+
+    const result = await Promise.race([geminiCallPromise, timeoutPromise]);
+    const responseText = (result as any).response.text().trim().split(" ")[0]; //혹시 하나 이상의 단어가 반환될 경우를 대비해 무조건 첫 단어만 반환
 
     // // 응답 텍스트에서 핵심 단어만 파싱
     // const keywords = responseText
