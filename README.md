@@ -1,12 +1,12 @@
-# React + Vite
+# Small Dot
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<img width="2048" height="1536" alt="smalldot_main" src="https://github.com/user-attachments/assets/2be446c9-001b-432e-ac88-e093d75ca6aa" /><br>
+Small Dot is an interactive memo project where users can explore a 3D globe built with Three.js, select a country, leave travel notes and impressions, and have the content automatically summarized by the Gemini API, with keywords visually displayed on the map.<br><br>
 
-Currently, two official plugins are available:
+### Sample Login
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+username: seongeun9901@gmail.com
 
-## Expanding the ESLint configuration
+pw: testuser01
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
