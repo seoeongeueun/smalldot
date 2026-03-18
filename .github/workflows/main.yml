@@ -2,7 +2,7 @@ name: Supabase Keepalive
 
 on:
   schedule:
-    - cron: "30 16 * * *"   # 매일 한국시간 새벽 1:30
+    - cron: "45 16 * * *"   # 매일 한국시간 새벽 1:45
   workflow_dispatch:
 
 jobs:
