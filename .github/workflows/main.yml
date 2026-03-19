@@ -2,7 +2,7 @@ name: Supabase Keepalive
 
 on:
   schedule:
-    - cron: "5 */2 * * *"   # 매 2시간마다 5분에 실행 (UTC 기준)
+    - cron: "7 14 * * *"   # 매일 한국시간 밤 11:07
   workflow_dispatch:
 
 jobs:
